@@ -50,3 +50,20 @@ function TalentDex:ImportSelectedBuild()
     dialog:UpdateAcceptButtonEnabledState()
     return true
 end
+
+function TalentDex:CopySelectedBuild()
+    local build = self:GetSelectedBuild()
+    if not build or type(build.talentImportString) ~= "string" or build.talentImportString == "" then
+        ShowMessage("TalentDex: No build code is available to copy.")
+        return false
+    end
+
+    if not CopyToClipboard then
+        ShowMessage("TalentDex: Clipboard support is unavailable.")
+        return false
+    end
+
+    CopyToClipboard(build.talentImportString)
+    DEFAULT_CHAT_FRAME:AddMessage("|cffF8C44FTalentDex:|r Build code copied to the clipboard.")
+    return true
+end

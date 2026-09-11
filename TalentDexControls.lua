@@ -209,12 +209,13 @@ function TalentDex:CreateControls(frame)
     end)
     self.importButton = importButton
 
-    local rotationButton = CreateTextButton(frame, "View Rotation", ACTION_WIDTH, ACTION_HEIGHT)
-    rotationButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 187, -338)
-    rotationButton:SetScript("OnClick", function()
-        TalentDex:OnActionRequested("view-rotation")
+    local copyButton = CreateTextButton(frame, "Copy Build", ACTION_WIDTH, ACTION_HEIGHT)
+    copyButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 187, -338)
+    copyButton:SetScript("OnClick", function()
+        TalentDex:OnActionRequested("copy-build")
     end)
-    self.actionButtons = { importButton, rotationButton }
+    self.copyButton = copyButton
+    self.actionButtons = { importButton, copyButton }
 
     SelectOption("source", self.selection.source)
     SelectOption("content", self.selection.content)
@@ -229,6 +230,8 @@ function TalentDex:UpdateImportButtonState()
     local enabled = build and type(build.talentImportString) == "string" and build.talentImportString ~= ""
     self.importButton:SetEnabled(enabled)
     self.importButton:SetAlpha(enabled and 1 or 0.45)
+    self.copyButton:SetEnabled(enabled)
+    self.copyButton:SetAlpha(enabled and 1 or 0.45)
 end
 
 function TalentDex:UpdateContentAvailability(source)
@@ -318,6 +321,11 @@ end
 function TalentDex:OnActionRequested(action)
     if action == "import-talents" then
         self:ImportSelectedBuild()
+        return
+    end
+
+    if action == "copy-build" then
+        self:CopySelectedBuild()
         return
     end
 
