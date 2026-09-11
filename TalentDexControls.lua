@@ -164,6 +164,9 @@ local function LayoutActions(self, showConditional)
         button:ClearAllPoints()
         button:SetPoint("TOPLEFT", self.frame, "TOPLEFT", xOffset, buttonOffset)
     end
+
+    local contentHeight = math.abs(buttonOffset) + ACTION_HEIGHT + 30
+    self.frame:SetHeight(contentHeight)
 end
 
 function TalentDex:CreateControls(frame)

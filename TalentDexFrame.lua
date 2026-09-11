@@ -1,7 +1,7 @@
 local _, TalentDex = ...
 
 local PANEL_WIDTH = 360
-local PANEL_HEIGHT = 620
+local PANEL_INITIAL_HEIGHT = 400
 
 local function ApplyBackdrop(frame)
     frame:SetBackdrop({
@@ -23,7 +23,7 @@ function TalentDex:CreateTalentDexFrame(talentFrame)
 
     -- UIParent keeps this companion panel independent from Blizzard's frame.
     local frame = CreateFrame("Frame", "TalentDexFrame", UIParent, "BackdropTemplate")
-    frame:SetSize(PANEL_WIDTH, PANEL_HEIGHT)
+    frame:SetSize(PANEL_WIDTH, PANEL_INITIAL_HEIGHT)
     frame:SetFrameStrata("DIALOG")
     frame:SetFrameLevel(talentFrame:GetFrameLevel() + 5)
     frame:Hide()
@@ -50,8 +50,8 @@ function TalentDex:CreateTalentDexFrame(talentFrame)
         TalentDex:HideFrame()
     end)
 
-    self:CreateControls(frame)
     self.frame = frame
+    self:CreateControls(frame)
     self:AnchorFrame()
     self:UpdatePlayerContextText()
     return frame
@@ -80,8 +80,9 @@ function TalentDex:AnchorFrame()
         return
     end
 
+    local talentWindow = self.talentFrame:GetParent()
     self.frame:ClearAllPoints()
-    self.frame:SetPoint("TOPLEFT", self.talentFrame, "TOPRIGHT", 12, 0)
+    self.frame:SetPoint("TOPLEFT", talentWindow, "TOPRIGHT", 12, 0)
 end
 
 function TalentDex:ShowFrame()
