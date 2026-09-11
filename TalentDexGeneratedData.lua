@@ -287,24 +287,18 @@ TalentDex.generatedBuildData = {
     MAGE = {
         [62] = {
             ["Icy Veins"] = {
-                ["Delve"] = { variantOrder = { "Arcane Delves -
-Sunfury" }, variants = {
-                    ["Arcane Delves -
-Sunfury"] = { talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZGzsYzMDNzYGAAADAYmZaWWWmBAwGAAbwMzwmlZMzyMGzMzMDbMjZMDAwAAAMAzMwMDAGmZG" },
+                ["Delve"] = { variantOrder = { "Arcane Delves - Sunfury" }, variants = {
+                    ["Arcane Delves - Sunfury"] = { talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZGzsYzMDNzYGAAADAYmZaWWWmBAwGAAbwMzwmlZMzyMGzMzMDbMjZMDAwAAAMAzMwMDAGmZG" },
                 } },
-                ["Mythic+"] = { variantOrder = { "Arcane Mythic+ -
-Sunfury" }, variants = {
-                    ["Arcane Mythic+ -
-Sunfury"] = { talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzQzMzAAAwAAmZmmlllZAAsBAwGMzMsZZGzsMjxMzMzwGzYGzAAMAAADwMDMzAghZmB" },
+                ["Mythic+"] = { variantOrder = { "Arcane Mythic+ - Sunfury" }, variants = {
+                    ["Arcane Mythic+ - Sunfury"] = { talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzQzMzAAAwAAmZmmlllZAAsBAwGMzMsZZGzsMjxMzMzwGzYGzAAMAAADwMDMzAghZmB" },
                 } },
                 ["PvP"] = { variantOrder = { "Midnight PvP Talent Builds for Arcane Mage in Arena" }, variants = {
                     ["Midnight PvP Talent Builds for Arcane Mage in Arena"] = { talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAMmtlZWmZmZzmZGaGmBAAwAAAAzMzssNzELAAsMMzMGLWmZmxMzYMzMzYhZMjZAAGAAAzsAAjBADDD" },
                 } },
-                ["Raid"] = { variantOrder = { "Sunfury Pure Single-Target Build", "Arcane Raid -
-Sunfury" }, variants = {
+                ["Raid"] = { variantOrder = { "Sunfury Pure Single-Target Build", "Arcane Raid - Sunfury" }, variants = {
                     ["Sunfury Pure Single-Target Build"] = { talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAwMz0sssMDAgNAAgZmZGbWmZmZZGjxMzgNmxMzMAADAAwAMzAmBADzMD" },
-                    ["Arcane Raid -
-Sunfury"] = { talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAwMz0sssMDAgNAAAzMDbWmxMLzYMzMzMsxMmZmBAYAAAGgZGwMAYYmZA" },
+                    ["Arcane Raid - Sunfury"] = { talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAwMz0sssMDAgNAAAzMDbWmxMLzYMzMzMsxMmZmBAYAAAGgZGwMAYYmZA" },
                 } },
             },
             ["Wowhead"] = {
@@ -318,18 +312,14 @@ Sunfury"] = { talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAG
         },
         [63] = {
             ["Icy Veins"] = {
-                ["Mythic+"] = { variantOrder = { "Fire Mythic+ -
-Sunfury" }, variants = {
-                    ["Fire Mythic+ -
-Sunfury"] = { talentImportString = "C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsgZGZmZGAAAAAmZmmltlZAA2MzM2mZmZGbAAAAAYzMjZGAAMjxMzMjZmlBgZGMjxAmhxA" },
+                ["Mythic+"] = { variantOrder = { "Fire Mythic+ - Sunfury" }, variants = {
+                    ["Fire Mythic+ - Sunfury"] = { talentImportString = "C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsgZGZmZGAAAAAmZmmltlZAA2MzM2mZmZGbAAAAAYzMjZGAAMjxMzMjZmlBgZGMjxAmhxA" },
                 } },
                 ["PvP"] = { variantOrder = { "3v3" }, variants = {
                     ["3v3"] = { talentImportString = "C8DAAAAAAAAAAAAAAAAAAAAAAMstMzyMzMb2MzIzwMAAAmZZGzMLzCAAAYxMjZbMzMjFAAAAAsYmZmBAAGmZmhxMzyMwMDIjBGmhBA" },
                 } },
-                ["Raid"] = { variantOrder = { "Fire Raid -
-Sunfury" }, variants = {
-                    ["Fire Raid -
-Sunfury"] = { talentImportString = "C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDZmZGAAAGAwMz0sstMDAwmZmx2MzMzYDAAAAAbmZMzAAgZMmZmZMzsMAMzAMGwMMGA" },
+                ["Raid"] = { variantOrder = { "Fire Raid - Sunfury" }, variants = {
+                    ["Fire Raid - Sunfury"] = { talentImportString = "C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDZmZGAAAGAwMz0sstMDAwmZmx2MzMzYDAAAAAbmZMzAAgZMmZmZMzsMAMzAMGwMMGA" },
                 } },
             },
             ["Wowhead"] = {
