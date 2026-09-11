@@ -2,10 +2,10 @@ local _, TalentDex = ...
 
 local PANEL_PADDING = 23
 local SELECTOR_WIDTH = 74
-local SELECTOR_HEIGHT = 50
+local SELECTOR_HEIGHT = 44
 local SELECTOR_GAP = 6
 local ACTION_WIDTH = 112
-local ACTION_HEIGHT = 30
+local ACTION_HEIGHT = 28
 
 local RESTRICTED_CONTENT_SOURCES = {
     PvP = {
@@ -15,16 +15,33 @@ local RESTRICTED_CONTENT_SOURCES = {
 }
 
 local NORMAL_BACKGROUND = { 0.05, 0.07, 0.10, 0.98 }
-local NORMAL_BORDER = { 0.38, 0.45, 0.50, 1 }
 local SELECTED_BACKGROUND = { 0.16, 0.12, 0.035, 1 }
 local SELECTED_BORDER = { 1, 0.72, 0.08, 1 }
 
+TalentDex.accentTitles = {}
+TalentDex.accentDividers = {}
+TalentDex.accentButtons = {}
+
+local function GetAccentColor()
+    local classFile = TalentDex.playerContext and TalentDex.playerContext.class
+    local color = classFile and RAID_CLASS_COLORS[classFile]
+    if color then
+        return color.r, color.g, color.b
+    end
+    return 0.35, 0.8, 1
+end
+
 local function SetButtonAppearance(button, selected)
     local background = selected and SELECTED_BACKGROUND or NORMAL_BACKGROUND
-    local border = selected and SELECTED_BORDER or NORMAL_BORDER
+    local border = selected and SELECTED_BORDER
 
     button:SetBackdropColor(unpack(background))
-    button:SetBackdropBorderColor(unpack(border))
+    if border then
+        button:SetBackdropBorderColor(unpack(border))
+    else
+        local red, green, blue = GetAccentColor()
+        button:SetBackdropBorderColor(red * 0.7, green * 0.7, blue * 0.7, 1)
+    end
     button.label:SetTextColor(selected and 1 or 0.9, selected and 0.8 or 0.9, selected and 0.25 or 0.9)
 end
 
@@ -44,10 +61,12 @@ local function CreateTextButton(parent, text, width, height)
     button.label:SetPoint("CENTER")
     button.label:SetText(text)
     button.label:SetJustifyH("CENTER")
+    table.insert(TalentDex.accentButtons, button)
 
     button:SetScript("OnEnter", function(self)
         if not self.selected then
-            self:SetBackdropBorderColor(0.7, 0.8, 0.85, 1)
+            local red, green, blue = GetAccentColor()
+            self:SetBackdropBorderColor(red, green, blue, 1)
             self:SetBackdropColor(0.08, 0.11, 0.15, 1)
         end
     end)
@@ -63,16 +82,20 @@ local function CreateSectionTitle(parent, text, yOffset)
     local title = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     title:SetPoint("TOPLEFT", parent, "TOPLEFT", PANEL_PADDING, yOffset)
     title:SetText(text)
-    title:SetTextColor(0.35, 0.8, 1)
+    local red, green, blue = GetAccentColor()
+    title:SetTextColor(red, green, blue)
+    table.insert(TalentDex.accentTitles, title)
     return title
 end
 
 local function CreateDivider(parent, yOffset)
     local divider = parent:CreateTexture(nil, "ARTWORK")
-    divider:SetColorTexture(0.75, 0.6, 0.15, 0.4)
+    local red, green, blue = GetAccentColor()
+    divider:SetColorTexture(red, green, blue, 0.4)
     divider:SetHeight(1)
     divider:SetPoint("TOPLEFT", parent, "TOPLEFT", 18, yOffset)
     divider:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -18, yOffset)
+    table.insert(TalentDex.accentDividers, divider)
     return divider
 end
 
@@ -225,10 +248,25 @@ function TalentDex:UpdateContentAvailability(source)
 end
 
 function TalentDex:OnPlayerContextUpdated()
+    self:UpdateAccentColor()
+    self:UpdatePlayerContextText()
     if self.frame and self.frame.controlsCreated then
         self:UpdateConditionalOptions(self.selection.content)
     end
     self:UpdateImportButtonState()
+end
+
+function TalentDex:UpdateAccentColor()
+    local red, green, blue = GetAccentColor()
+    for _, title in ipairs(self.accentTitles) do
+        title:SetTextColor(red, green, blue)
+    end
+    for _, divider in ipairs(self.accentDividers) do
+        divider:SetColorTexture(red, green, blue, 0.4)
+    end
+    for _, button in ipairs(self.accentButtons) do
+        SetButtonAppearance(button, button.selected)
+    end
 end
 
 function TalentDex:OnBuildDataUpdated()

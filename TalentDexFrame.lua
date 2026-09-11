@@ -34,11 +34,15 @@ function TalentDex:CreateTalentDexFrame(talentFrame)
     title:SetText("TalentDex")
     title:SetTextColor(1, 0.78, 0.18)
 
+    local contextText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    contextText:SetPoint("TOP", title, "BOTTOM", 0, -5)
+    frame.contextText = contextText
+
     local divider = frame:CreateTexture(nil, "ARTWORK")
     divider:SetColorTexture(0.75, 0.6, 0.15, 0.55)
     divider:SetHeight(1)
-    divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 18, -52)
-    divider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -18, -52)
+    divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 18, -64)
+    divider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -18, -64)
 
     local closeButton = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
     closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4)
@@ -49,7 +53,26 @@ function TalentDex:CreateTalentDexFrame(talentFrame)
     self:CreateControls(frame)
     self.frame = frame
     self:AnchorFrame()
+    self:UpdatePlayerContextText()
     return frame
+end
+
+function TalentDex:UpdatePlayerContextText()
+    if not self.frame or not self.frame.contextText then
+        return
+    end
+
+    local context = self.playerContext or {}
+    local className = context.className or "Unknown Class"
+    local specName = context.specName or "No Specialization"
+    local classColor = context.class and RAID_CLASS_COLORS[context.class]
+    self.frame.contextText:SetText(className .. " - " .. specName)
+
+    if classColor then
+        self.frame.contextText:SetTextColor(classColor.r, classColor.g, classColor.b)
+    else
+        self.frame.contextText:SetTextColor(0.8, 0.8, 0.8)
+    end
 end
 
 function TalentDex:AnchorFrame()
