@@ -12,7 +12,7 @@ local function CreateToggleButton(talentFrame)
     button:SetSize(130, 22)
     -- Keep the toggle in the bottom-bar gap between Blizzard's search and apply controls.
     button:SetPoint("RIGHT", talentFrame.ApplyButton, "LEFT", -20, 0)
-    button:SetText("Open TalentDex")
+    button:SetText("TalentDex")
     button:SetScript("OnClick", function()
         TalentDex:ToggleFrame()
     end)
@@ -20,7 +20,7 @@ end
 
 local function UpdateButtonText()
     if button then
-        button:SetText(TalentDex.frame and TalentDex.frame:IsShown() and "Close TalentDex" or "Open TalentDex")
+        button:SetText("TalentDex")
     end
 end
 
