@@ -7,20 +7,10 @@ local SELECTOR_GAP = 6
 local ACTION_WIDTH = 112
 local ACTION_HEIGHT = 30
 
--- Add future content-specific option rows here; the renderer derives sizing and
--- selection behavior from this table rather than from one-off UI code.
-local CONDITIONAL_OPTIONS = {
-    Raid = {
-        key = "variant",
-        title = "VARIANT",
-        default = "Single Target",
-        options = { "Single Target", "Cleave" },
-    },
+local RESTRICTED_CONTENT_SOURCES = {
     PvP = {
-        key = "mode",
-        title = "MODE",
-        default = "Solo",
-        options = { "Solo", "2v2", "3v3", "Blitz", "RBG" },
+        ["Icy Veins"] = true,
+        Murlok = true,
     },
 }
 
@@ -95,7 +85,9 @@ local function SelectOption(group, value)
         SetButtonAppearance(button, button.selected)
     end
 
-    if group == "content" then
+    if group == "source" then
+        TalentDex:UpdateContentAvailability(value)
+    elseif group == "content" then
         TalentDex:UpdateConditionalOptions(value)
     end
 
@@ -213,12 +205,41 @@ function TalentDex:UpdateImportButtonState()
     self.importButton:SetAlpha(enabled and 1 or 0.45)
 end
 
+function TalentDex:UpdateContentAvailability(source)
+    if not self.optionButtons or not self.optionButtons.content then
+        return
+    end
+
+    for content, button in pairs(self.optionButtons.content) do
+        local allowedSources = RESTRICTED_CONTENT_SOURCES[content]
+        button:SetShown(not allowedSources or allowedSources[source])
+    end
+
+    local selectedContentButton = self.optionButtons.content[self.selection.content]
+    if not selectedContentButton or not selectedContentButton:IsShown() then
+        SelectOption("content", "Mythic+")
+        return
+    end
+
+    self:UpdateConditionalOptions(self.selection.content)
+end
+
 function TalentDex:OnPlayerContextUpdated()
+    if self.frame and self.frame.controlsCreated then
+        self:UpdateConditionalOptions(self.selection.content)
+    end
+    self:UpdateImportButtonState()
+end
+
+function TalentDex:OnBuildDataUpdated()
+    if self.frame and self.frame.controlsCreated then
+        self:UpdateContentAvailability(self.selection.source)
+    end
     self:UpdateImportButtonState()
 end
 
 function TalentDex:UpdateConditionalOptions(content)
-    local definition = CONDITIONAL_OPTIONS[content]
+    local definition = self:GetConditionalOptions()
     if not definition then
         self.conditionalSection:Hide()
         LayoutActions(self, false)
@@ -231,14 +252,17 @@ function TalentDex:UpdateConditionalOptions(content)
         end
     end
 
-    local buttons = self.conditionalButtons[content]
+    local cacheKey = definition.key .. "\031" .. table.concat(definition.options, "\031")
+    local buttons = self.conditionalButtons[cacheKey]
     if not buttons then
         buttons = CreateConditionalButtons(self.conditionalSection, definition)
-        self.conditionalButtons[content] = buttons
+        self.conditionalButtons[cacheKey] = buttons
     end
 
     self.optionButtons[definition.key] = buttons
-    self.selection[definition.key] = self.selection[definition.key] or definition.default
+    if not buttons[self.selection[definition.key]] then
+        self.selection[definition.key] = definition.default
+    end
     self.conditionalTitle:SetText(definition.title)
     self.conditionalSection:Show()
 

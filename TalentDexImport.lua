@@ -10,7 +10,9 @@ function TalentDex:BuildLoadoutName(build)
 
     if build.content == "Raid" then
         table.insert(parts, "Raid")
-        table.insert(parts, RAID_VARIANT_LABELS[build.variant] or build.variant or "Build")
+        if build.variant then
+            table.insert(parts, RAID_VARIANT_LABELS[build.variant] or build.variant)
+        end
     elseif build.content == "PvP" then
         table.insert(parts, build.mode or "PvP")
     else

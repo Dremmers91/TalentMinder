@@ -18,18 +18,13 @@ local MOCK_BUILDS = {
                     rotationPlaceholder = "Mock Arcane Delve priority.",
                 },
                 Raid = {
-                    variants = {
-                        ["Single Target"] = {
-                            talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAwMz0sssMDAEbAAAmZG2sMjZWmxYmZmZYhZMzMDAwAAAMAzMgZAwwMzA",
-                            rotationPlaceholder = "Mock Arcane single-target priority.",
-                        },
-                        Cleave = {
-                            talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAwMz0sssMDAEbAAAmZG2sMjZWmxYmZmZYhZMzMDAwAAAMAzMgZAwwMzA",
-                            rotationPlaceholder = "Mock Arcane cleave priority.",
-                        },
-                    },
+                    talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAwMz0sssMDAEbAAAmZG2sMjZWmxYmZmZYhZMzMDAwAAAMAzMgZAwwMzA",
+                    rotationPlaceholder = "Mock Arcane Raid priority.",
                 },
+            },
+            Murlok = {
                 PvP = {
+                    modeOrder = { "Solo", "2v2", "3v3", "Blitz", "RBG" },
                     modes = {
                         Solo = {
                             talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzMzMzMmxM",
@@ -75,7 +70,7 @@ TalentDex.buildSelection = {
 }
 TalentDex.buildData = MOCK_BUILDS
 
-local function FindBuild(buildData, context, selection)
+local function FindContentBuild(buildData, context, selection)
     local fallbackBuild = buildData.default.default.default.default
     local classBuilds = context.class and buildData[context.class] or buildData.default
     local specBuilds = context.spec and classBuilds[context.spec] or classBuilds.default
@@ -93,13 +88,36 @@ local function FindBuild(buildData, context, selection)
     if not contentBuild then
         return fallbackBuild
     end
+    return contentBuild
+end
+
+local function GetOptionList(options, preferredOrder)
+    local list = {}
+    if preferredOrder then
+        for _, option in ipairs(preferredOrder) do
+            if options[option] then
+                table.insert(list, option)
+            end
+        end
+    else
+        for option in pairs(options) do
+            table.insert(list, option)
+        end
+        table.sort(list)
+    end
+    return list
+end
+
+local function ResolveBuild(contentBuild, selection)
     if contentBuild.variants then
-        return contentBuild.variants[selection.variant] or fallbackBuild
+        local options = GetOptionList(contentBuild.variants, contentBuild.variantOrder)
+        return contentBuild.variants[selection.variant] or contentBuild.variants[options[1]], "variant"
     end
     if contentBuild.modes then
-        return contentBuild.modes[selection.mode] or fallbackBuild
+        local options = GetOptionList(contentBuild.modes, contentBuild.modeOrder)
+        return contentBuild.modes[selection.mode] or contentBuild.modes[options[1]], "mode"
     end
-    return contentBuild
+    return contentBuild, nil
 end
 
 function TalentDex:RefreshPlayerContext()
@@ -130,12 +148,32 @@ end
 
 function TalentDex:SetBuildData(buildData)
     self.buildData = buildData or MOCK_BUILDS
+    if self.OnBuildDataUpdated then
+        self:OnBuildDataUpdated()
+    end
+end
+
+function TalentDex:GetConditionalOptions()
+    local contentBuild = FindContentBuild(self.buildData, self.playerContext, self.buildSelection)
+    if contentBuild.variants then
+        local options = GetOptionList(contentBuild.variants, contentBuild.variantOrder)
+        if #options > 1 then
+            return { key = "variant", title = "VARIANT", options = options, default = options[1] }
+        end
+    elseif contentBuild.modes then
+        local options = GetOptionList(contentBuild.modes, contentBuild.modeOrder)
+        if #options > 1 then
+            return { key = "mode", title = "MODE", options = options, default = options[1] }
+        end
+    end
+    return nil
 end
 
 function TalentDex:GetSelectedBuild()
     local context = self.playerContext
     local selection = self.buildSelection
-    local build = FindBuild(self.buildData, context, selection)
+    local contentBuild = FindContentBuild(self.buildData, context, selection)
+    local build, conditionalKey = ResolveBuild(contentBuild, selection)
     if not build then
         return nil
     end
@@ -144,8 +182,8 @@ function TalentDex:GetSelectedBuild()
         spec = context.spec,
         source = selection.source,
         content = selection.content,
-        variant = selection.content == "Raid" and selection.variant or nil,
-        mode = selection.content == "PvP" and selection.mode or nil,
+        variant = conditionalKey == "variant" and selection.variant or nil,
+        mode = conditionalKey == "mode" and selection.mode or nil,
         talentImportString = build.talentImportString,
         rotationPlaceholder = build.rotationPlaceholder,
     }

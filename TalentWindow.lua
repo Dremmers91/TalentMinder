@@ -10,8 +10,8 @@ local function CreateToggleButton(talentFrame)
 
     button = CreateFrame("Button", "TalentDexToggleButton", talentFrame, "UIPanelButtonTemplate")
     button:SetSize(130, 22)
-    -- 12.1 reserves the right edge of BottomBar for War Mode and PvP talents.
-    button:SetPoint("RIGHT", talentFrame.BottomBar, "RIGHT", -250, 3)
+    -- Keep the toggle in the bottom-bar gap between Blizzard's search and apply controls.
+    button:SetPoint("RIGHT", talentFrame.ApplyButton, "LEFT", -20, 0)
     button:SetText("Open TalentDex")
     button:SetScript("OnClick", function()
         TalentDex:ToggleFrame()
