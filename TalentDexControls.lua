@@ -7,13 +7,6 @@ local SELECTOR_GAP = 6
 local ACTION_WIDTH = 112
 local ACTION_HEIGHT = 28
 
-local RESTRICTED_CONTENT_SOURCES = {
-    PvP = {
-        ["Icy Veins"] = true,
-        Murlok = true,
-    },
-}
-
 local NORMAL_BACKGROUND = { 0.05, 0.07, 0.10, 0.98 }
 local SELECTED_BACKGROUND = { 0.16, 0.12, 0.035, 1 }
 local SELECTED_BORDER = { 1, 0.72, 0.08, 1 }
@@ -217,8 +210,8 @@ function TalentDex:CreateControls(frame)
     self.copyButton = copyButton
     self.actionButtons = { importButton, copyButton }
 
-    SelectOption("source", self.selection.source)
-    SelectOption("content", self.selection.content)
+    self:UpdateSourceAvailability()
+    self:UpdateImportButtonState()
 end
 
 function TalentDex:UpdateImportButtonState()
@@ -239,25 +232,60 @@ function TalentDex:UpdateContentAvailability(source)
         return
     end
 
+    local availableContent = self:GetAvailableContent(source)
+    local availableLookup = {}
+    for _, content in ipairs(availableContent) do
+        availableLookup[content] = true
+    end
     for content, button in pairs(self.optionButtons.content) do
-        local allowedSources = RESTRICTED_CONTENT_SOURCES[content]
-        button:SetShown(not allowedSources or allowedSources[source])
+        button:SetShown(availableLookup[content] == true)
     end
 
     local selectedContentButton = self.optionButtons.content[self.selection.content]
     if not selectedContentButton or not selectedContentButton:IsShown() then
-        SelectOption("content", "Mythic+")
+        if #availableContent > 0 then
+            SelectOption("content", availableContent[1])
+        else
+            self:UpdateConditionalOptions(nil)
+        end
         return
     end
 
     self:UpdateConditionalOptions(self.selection.content)
 end
 
+function TalentDex:UpdateSourceAvailability()
+    if not self.optionButtons or not self.optionButtons.source then
+        return
+    end
+
+    local availableSources = self:GetAvailableSources()
+    local availableLookup = {}
+    for _, source in ipairs(availableSources) do
+        availableLookup[source] = true
+    end
+    for source, button in pairs(self.optionButtons.source) do
+        button:SetShown(availableLookup[source] == true)
+    end
+
+    local selectedSourceButton = self.optionButtons.source[self.selection.source]
+    if not selectedSourceButton or not selectedSourceButton:IsShown() then
+        if #availableSources > 0 then
+            SelectOption("source", availableSources[1])
+        else
+            self:UpdateContentAvailability(nil)
+        end
+        return
+    end
+
+    SelectOption("source", self.selection.source)
+end
+
 function TalentDex:OnPlayerContextUpdated()
     self:UpdateAccentColor()
     self:UpdatePlayerContextText()
     if self.frame and self.frame.controlsCreated then
-        self:UpdateConditionalOptions(self.selection.content)
+        self:UpdateSourceAvailability()
     end
     self:UpdateImportButtonState()
 end
@@ -277,7 +305,7 @@ end
 
 function TalentDex:OnBuildDataUpdated()
     if self.frame and self.frame.controlsCreated then
-        self:UpdateContentAvailability(self.selection.source)
+        self:UpdateSourceAvailability()
     end
     self:UpdateImportButtonState()
 end

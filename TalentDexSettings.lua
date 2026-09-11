@@ -13,17 +13,6 @@ local VALID_OPTIONS = {
         Delve = true,
         PvP = true,
     },
-    variant = {
-        ["Single Target"] = true,
-        Cleave = true,
-    },
-    mode = {
-        Solo = true,
-        ["2v2"] = true,
-        ["3v3"] = true,
-        Blitz = true,
-        RBG = true,
-    },
 }
 
 local DEFAULT_SELECTION = {
@@ -40,6 +29,13 @@ local function GetValidValue(savedValue, key)
     return DEFAULT_SELECTION[key]
 end
 
+local function GetOptionalValue(savedValue, key)
+    if type(savedValue) == "string" and savedValue ~= "" then
+        return savedValue
+    end
+    return DEFAULT_SELECTION[key]
+end
+
 function TalentDex:InitializeSavedSettings()
     if type(TalentDexDB) ~= "table" then
         TalentDexDB = {}
@@ -48,8 +44,8 @@ function TalentDex:InitializeSavedSettings()
     self.buildSelection = {
         source = GetValidValue(TalentDexDB.source, "source"),
         content = GetValidValue(TalentDexDB.content, "content"),
-        variant = GetValidValue(TalentDexDB.variant, "variant"),
-        mode = GetValidValue(TalentDexDB.mode, "mode"),
+        variant = GetOptionalValue(TalentDexDB.variant, "variant"),
+        mode = GetOptionalValue(TalentDexDB.mode, "mode"),
     }
     self.settingsInitialized = true
     self:SaveBuildSelection()
@@ -62,6 +58,6 @@ function TalentDex:SaveBuildSelection()
 
     TalentDexDB.source = GetValidValue(self.buildSelection.source, "source")
     TalentDexDB.content = GetValidValue(self.buildSelection.content, "content")
-    TalentDexDB.variant = GetValidValue(self.buildSelection.variant, "variant")
-    TalentDexDB.mode = GetValidValue(self.buildSelection.mode, "mode")
+    TalentDexDB.variant = GetOptionalValue(self.buildSelection.variant, "variant")
+    TalentDexDB.mode = GetOptionalValue(self.buildSelection.mode, "mode")
 end

@@ -7,6 +7,7 @@
 Core.lua
 TalentDexSettings.lua
 TalentDexData.lua
+TalentDexGeneratedData.lua
 TalentDexImport.lua
 TalentWindow.lua
 TalentDexFrame.lua
