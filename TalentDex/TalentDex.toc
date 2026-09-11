@@ -1,0 +1,13 @@
+## Interface: 120100
+## Title: TalentDex
+## Notes: A companion panel for the Retail Talents window.
+## Author: TalentDex
+## Version: 0.1.0
+## SavedVariables: TalentDexDB
+Core.lua
+TalentDexSettings.lua
+TalentDexData.lua
+TalentDexImport.lua
+TalentWindow.lua
+TalentDexFrame.lua
+TalentDexControls.lua
