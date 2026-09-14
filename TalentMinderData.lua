@@ -20,7 +20,7 @@ local MOCK_BUILDS = {
 TalentMinder.playerContext = {}
 TalentMinder.buildSelection = {
     source = "Wowhead",
-    content = "Mythic+",
+    content = "M+",
 }
 TalentMinder.buildData = MOCK_BUILDS
 
@@ -29,9 +29,17 @@ local EMPTY_BUILD = {
     rotationPlaceholder = "No TalentMinder build is available for this selection.",
 }
 
-local CONTENT_ORDER = { "Mythic+", "Raid", "Delve", "PvP" }
-local SOURCE_ORDER = { "Wowhead", "Icy Veins", "Archon", "Murlok" }
-local PVP_SOURCES = { ["Icy Veins"] = true, Murlok = true }
+-- These are display labels.  CONTENT_KEYS lets the addon read data generated
+-- with either the legacy names or the concise names shown in the panel.
+local CONTENT_ORDER = { "Delves", "Raid", "M+", "PVP" }
+local CONTENT_KEYS = {
+    Delves = { "Delves", "Delve" },
+    Raid = { "Raid" },
+    ["M+"] = { "M+", "Mythic+" },
+    PVP = { "PVP", "PvP" },
+}
+local SOURCE_ORDER = { "Wowhead", "Icy Veins" }
+local PVP_SOURCES = { ["Icy Veins"] = true }
 
 local function GetSpecBuilds(buildData, context)
     if type(buildData) ~= "table" or not context.class or not context.spec then
@@ -45,7 +53,16 @@ end
 local function FindContentBuild(buildData, context, selection)
     local specBuilds = GetSpecBuilds(buildData, context)
     local sourceBuilds = specBuilds and specBuilds[selection.source]
-    return (sourceBuilds and sourceBuilds[selection.content]) or EMPTY_BUILD
+    if not sourceBuilds then
+        return EMPTY_BUILD
+    end
+
+    for _, key in ipairs(CONTENT_KEYS[selection.content] or { selection.content }) do
+        if sourceBuilds[key] then
+            return sourceBuilds[key]
+        end
+    end
+    return EMPTY_BUILD
 end
 
 local function GetOptionList(options, preferredOrder)
@@ -65,17 +82,59 @@ local function GetOptionList(options, preferredOrder)
     return list
 end
 
+local function GetVariantOptions(contentBuild, source)
+    local options = GetOptionList(contentBuild.variants, contentBuild.variantOrder)
+    if source ~= "Wowhead" then
+        return options
+    end
+
+    local bestOptions = {}
+    for _, option in ipairs(options) do
+        if option:lower():find("best", 1, true) then
+            table.insert(bestOptions, option)
+        end
+    end
+    return bestOptions
+end
+
 local function ResolveBuild(contentBuild, selection)
     if contentBuild.variants then
-        local options = GetOptionList(contentBuild.variants, contentBuild.variantOrder)
-        local selectionKey = selection.content == "PvP" and "mode" or "variant"
-        return contentBuild.variants[selection[selectionKey]] or contentBuild.variants[options[1]] or EMPTY_BUILD, #options > 1 and selectionKey or nil
+        local options = GetVariantOptions(contentBuild, selection.source)
+        local selectionKey = selection.content == "PVP" and "mode" or "variant"
+        local selectedOption
+        for _, option in ipairs(options) do
+            if option == selection[selectionKey] then
+                selectedOption = option
+                break
+            end
+        end
+        return contentBuild.variants[selectedOption or options[1]] or EMPTY_BUILD, #options > 1 and selectionKey or nil
     end
     if contentBuild.modes then
         local options = GetOptionList(contentBuild.modes, contentBuild.modeOrder)
         return contentBuild.modes[selection.mode] or contentBuild.modes[options[1]] or EMPTY_BUILD, #options > 1 and "mode" or nil
     end
     return contentBuild, nil
+end
+
+local function HasImportString(build, source)
+    if type(build) ~= "table" then
+        return false
+    end
+    if type(build.talentImportString) == "string" and build.talentImportString ~= "" then
+        return true
+    end
+    for groupName, group in pairs({ variants = build.variants, modes = build.modes }) do
+        if type(group) == "table" then
+            for option, nestedBuild in pairs(group) do
+                if (groupName ~= "variants" or source ~= "Wowhead" or option:lower():find("best", 1, true))
+                    and HasImportString(nestedBuild, source) then
+                    return true
+                end
+            end
+        end
+    end
+    return false
 end
 
 function TalentMinder:RefreshPlayerContext()
@@ -120,7 +179,11 @@ function TalentMinder:GetAvailableContent(source)
     end
 
     for _, content in ipairs(CONTENT_ORDER) do
-        if sourceBuilds[content] and (content ~= "PvP" or PVP_SOURCES[source]) then
+        local contentBuild = FindContentBuild(self.buildData, self.playerContext, {
+            source = source,
+            content = content,
+        })
+        if HasImportString(contentBuild, source) and (content ~= "PVP" or PVP_SOURCES[source]) then
             table.insert(availableContent, content)
         end
     end
@@ -140,9 +203,9 @@ end
 function TalentMinder:GetConditionalOptions()
     local contentBuild = FindContentBuild(self.buildData, self.playerContext, self.buildSelection)
     if contentBuild.variants then
-        local options = GetOptionList(contentBuild.variants, contentBuild.variantOrder)
+        local options = GetVariantOptions(contentBuild, self.buildSelection.source)
         if #options > 1 then
-            local isPvP = self.buildSelection.content == "PvP"
+            local isPvP = self.buildSelection.content == "PVP"
             return {
                 key = isPvP and "mode" or "variant",
                 title = isPvP and "MODE" or "VARIANT",

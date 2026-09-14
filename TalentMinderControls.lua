@@ -112,15 +112,38 @@ end
 
 local function CreateOptionRow(parent, group, options, yOffset)
     TalentMinder.optionButtons[group] = {}
+    TalentMinder.optionOrder = TalentMinder.optionOrder or {}
+    TalentMinder.optionOrder[group] = options
 
     for index, option in ipairs(options) do
         local button = CreateTextButton(parent, option, SELECTOR_WIDTH, SELECTOR_HEIGHT)
-        local xOffset = PANEL_PADDING + (index - 1) * (SELECTOR_WIDTH + SELECTOR_GAP)
-        button:SetPoint("TOPLEFT", parent, "TOPLEFT", xOffset, yOffset)
         button:SetScript("OnClick", function()
             SelectOption(group, option)
         end)
         TalentMinder.optionButtons[group][option] = button
+    end
+end
+
+local function LayoutOptionRow(parent, group, yOffset)
+    local buttons = TalentMinder.optionButtons[group]
+    local shown = {}
+    for _, option in ipairs(TalentMinder.optionOrder[group]) do
+        local button = buttons[option]
+        if button:IsShown() then
+            table.insert(shown, button)
+        end
+    end
+
+    local count = #shown
+    local columns = math.min(count, 4)
+    local availableWidth = 314
+    local width = columns > 0 and math.floor((availableWidth - SELECTOR_GAP * (columns - 1)) / columns) or SELECTOR_WIDTH
+    for index, button in ipairs(shown) do
+        local column = (index - 1) % columns
+        local row = math.floor((index - 1) / columns)
+        button:ClearAllPoints()
+        button:SetSize(width, SELECTOR_HEIGHT)
+        button:SetPoint("TOPLEFT", parent, "TOPLEFT", PANEL_PADDING + column * (width + SELECTOR_GAP), yOffset - row * (SELECTOR_HEIGHT + SELECTOR_GAP))
     end
 end
 
@@ -153,9 +176,8 @@ local function LayoutActions(self, showConditional)
     self.actionTitle:SetPoint("TOPLEFT", self.frame, "TOPLEFT", PANEL_PADDING, titleOffset)
 
     for _, button in ipairs(self.actionButtons) do
-        local _, _, _, xOffset = button:GetPoint()
         button:ClearAllPoints()
-        button:SetPoint("TOPLEFT", self.frame, "TOPLEFT", xOffset, buttonOffset)
+        button:SetPoint("TOP", self.frame, "TOP", 0, buttonOffset)
     end
 
     local contentHeight = math.abs(buttonOffset) + ACTION_HEIGHT + 30
@@ -177,11 +199,11 @@ function TalentMinder:CreateControls(frame)
     self.optionButtons = {}
 
     CreateSectionTitle(frame, "SOURCE", -76)
-    CreateOptionRow(frame, "source", { "Wowhead", "Icy Veins", "Archon", "Murlok" }, -100)
+    CreateOptionRow(frame, "source", { "Wowhead", "Icy Veins" }, -100)
     CreateDivider(frame, -170)
 
     CreateSectionTitle(frame, "CONTENT", -194)
-    CreateOptionRow(frame, "content", { "Mythic+", "Raid", "Delve", "PvP" }, -218)
+    CreateOptionRow(frame, "content", { "Delves", "Raid", "M+", "PVP" }, -218)
     CreateDivider(frame, -288)
 
     self.conditionalSection = CreateFrame("Frame", nil, frame)
@@ -195,20 +217,14 @@ function TalentMinder:CreateControls(frame)
     self.actionTitle = CreateSectionTitle(frame, "ACTION", -312)
     self.actionButtons = {}
 
-    local importButton = CreateTextButton(frame, "Import Talents", ACTION_WIDTH, ACTION_HEIGHT)
-    importButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 61, -338)
+    local importButton = CreateTextButton(frame, "Import Build", ACTION_WIDTH, ACTION_HEIGHT)
+    importButton:SetPoint("TOP", frame, "TOP", 0, -338)
     importButton:SetScript("OnClick", function()
         TalentMinder:OnActionRequested("import-talents")
     end)
     self.importButton = importButton
 
-    local copyButton = CreateTextButton(frame, "Copy Build", ACTION_WIDTH, ACTION_HEIGHT)
-    copyButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 187, -338)
-    copyButton:SetScript("OnClick", function()
-        TalentMinder:OnActionRequested("copy-build")
-    end)
-    self.copyButton = copyButton
-    self.actionButtons = { importButton, copyButton }
+    self.actionButtons = { importButton }
 
     self:UpdateSourceAvailability()
     self:UpdateImportButtonState()
@@ -223,8 +239,6 @@ function TalentMinder:UpdateImportButtonState()
     local enabled = build and type(build.talentImportString) == "string" and build.talentImportString ~= ""
     self.importButton:SetEnabled(enabled)
     self.importButton:SetAlpha(enabled and 1 or 0.45)
-    self.copyButton:SetEnabled(enabled)
-    self.copyButton:SetAlpha(enabled and 1 or 0.45)
 end
 
 function TalentMinder:UpdateContentAvailability(source)
@@ -240,6 +254,7 @@ function TalentMinder:UpdateContentAvailability(source)
     for content, button in pairs(self.optionButtons.content) do
         button:SetShown(availableLookup[content] == true)
     end
+    LayoutOptionRow(self.frame, "content", -218)
 
     local selectedContentButton = self.optionButtons.content[self.selection.content]
     if not selectedContentButton or not selectedContentButton:IsShown() then
@@ -267,6 +282,7 @@ function TalentMinder:UpdateSourceAvailability()
     for source, button in pairs(self.optionButtons.source) do
         button:SetShown(availableLookup[source] == true)
     end
+    LayoutOptionRow(self.frame, "source", -100)
 
     local selectedSourceButton = self.optionButtons.source[self.selection.source]
     if not selectedSourceButton or not selectedSourceButton:IsShown() then
@@ -349,11 +365,6 @@ end
 function TalentMinder:OnActionRequested(action)
     if action == "import-talents" then
         self:ImportSelectedBuild()
-        return
-    end
-
-    if action == "copy-build" then
-        self:CopySelectedBuild()
         return
     end
 

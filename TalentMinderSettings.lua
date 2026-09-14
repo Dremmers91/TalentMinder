@@ -4,25 +4,32 @@ local VALID_OPTIONS = {
     source = {
         Wowhead = true,
         ["Icy Veins"] = true,
-        Archon = true,
-        Murlok = true,
     },
     content = {
-        ["Mythic+"] = true,
+        ["M+"] = true,
         Raid = true,
-        Delve = true,
-        PvP = true,
+        Delves = true,
+        PVP = true,
     },
 }
 
 local DEFAULT_SELECTION = {
     source = "Wowhead",
-    content = "Mythic+",
+    content = "M+",
     variant = "Single Target",
     mode = "Solo",
 }
 
+local LEGACY_OPTION_MAP = {
+    content = {
+        ["Mythic+"] = "M+",
+        Delve = "Delves",
+        PvP = "PVP",
+    },
+}
+
 local function GetValidValue(savedValue, key)
+    savedValue = LEGACY_OPTION_MAP[key] and LEGACY_OPTION_MAP[key][savedValue] or savedValue
     if type(savedValue) == "string" and VALID_OPTIONS[key][savedValue] then
         return savedValue
     end
