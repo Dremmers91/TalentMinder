@@ -1,32 +1,32 @@
-local _, TalentDex = ...
+local _, TalentMinder = ...
 
 local GetCurrentSpecialization = C_SpecializationInfo and C_SpecializationInfo.GetSpecialization or GetSpecialization
 local GetSpecializationDetails = C_SpecializationInfo and C_SpecializationInfo.GetSpecializationInfo or GetSpecializationInfo
 
--- Live build data is loaded from TalentDexGeneratedData.lua.
+-- Live build data is loaded from TalentMinderGeneratedData.lua.
 local MOCK_BUILDS = {
     default = {
         default = {
             default = {
                 default = {
                     talentImportString = "",
-                    rotationPlaceholder = "No approved TalentDex build data is installed yet.",
+                    rotationPlaceholder = "No approved TalentMinder build data is installed yet.",
                 },
             },
         },
     },
 }
 
-TalentDex.playerContext = {}
-TalentDex.buildSelection = {
+TalentMinder.playerContext = {}
+TalentMinder.buildSelection = {
     source = "Wowhead",
     content = "Mythic+",
 }
-TalentDex.buildData = MOCK_BUILDS
+TalentMinder.buildData = MOCK_BUILDS
 
 local EMPTY_BUILD = {
     talentImportString = "",
-    rotationPlaceholder = "No TalentDex build is available for this selection.",
+    rotationPlaceholder = "No TalentMinder build is available for this selection.",
 }
 
 local CONTENT_ORDER = { "Mythic+", "Raid", "Delve", "PvP" }
@@ -78,7 +78,7 @@ local function ResolveBuild(contentBuild, selection)
     return contentBuild, nil
 end
 
-function TalentDex:RefreshPlayerContext()
+function TalentMinder:RefreshPlayerContext()
     local className, classFile, classID = UnitClass("player")
     local specIndex = GetCurrentSpecialization and GetCurrentSpecialization()
     local specID, specName
@@ -99,19 +99,19 @@ function TalentDex:RefreshPlayerContext()
     end
 end
 
-function TalentDex:SetBuildSelection(key, value)
+function TalentMinder:SetBuildSelection(key, value)
     self.buildSelection[key] = value
     self:SaveBuildSelection()
 end
 
-function TalentDex:SetBuildData(buildData)
+function TalentMinder:SetBuildData(buildData)
     self.buildData = buildData or MOCK_BUILDS
     if self.OnBuildDataUpdated then
         self:OnBuildDataUpdated()
     end
 end
 
-function TalentDex:GetAvailableContent(source)
+function TalentMinder:GetAvailableContent(source)
     local specBuilds = GetSpecBuilds(self.buildData, self.playerContext)
     local sourceBuilds = specBuilds and source and specBuilds[source]
     local availableContent = {}
@@ -127,7 +127,7 @@ function TalentDex:GetAvailableContent(source)
     return availableContent
 end
 
-function TalentDex:GetAvailableSources()
+function TalentMinder:GetAvailableSources()
     local availableSources = {}
     for _, source in ipairs(SOURCE_ORDER) do
         if #self:GetAvailableContent(source) > 0 then
@@ -137,7 +137,7 @@ function TalentDex:GetAvailableSources()
     return availableSources
 end
 
-function TalentDex:GetConditionalOptions()
+function TalentMinder:GetConditionalOptions()
     local contentBuild = FindContentBuild(self.buildData, self.playerContext, self.buildSelection)
     if contentBuild.variants then
         local options = GetOptionList(contentBuild.variants, contentBuild.variantOrder)
@@ -159,7 +159,7 @@ function TalentDex:GetConditionalOptions()
     return nil
 end
 
-function TalentDex:GetSelectedBuild()
+function TalentMinder:GetSelectedBuild()
     local context = self.playerContext
     local selection = self.buildSelection
     local contentBuild = FindContentBuild(self.buildData, context, selection)

@@ -1,0 +1,14 @@
+## Interface: 120100
+## Title: TalentMinder
+## Notes: A companion panel for the Retail Talents window.
+## Author: TalentMinder
+## Version: 0.1.0
+## SavedVariables: TalentMinderDB
+Core.lua
+TalentMinderSettings.lua
+TalentMinderData.lua
+TalentMinderGeneratedData.lua
+TalentMinderImport.lua
+TalentWindow.lua
+TalentMinderFrame.lua
+TalentMinderControls.lua

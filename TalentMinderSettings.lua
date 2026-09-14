@@ -1,4 +1,4 @@
-local _, TalentDex = ...
+local _, TalentMinder = ...
 
 local VALID_OPTIONS = {
     source = {
@@ -36,28 +36,28 @@ local function GetOptionalValue(savedValue, key)
     return DEFAULT_SELECTION[key]
 end
 
-function TalentDex:InitializeSavedSettings()
-    if type(TalentDexDB) ~= "table" then
-        TalentDexDB = {}
+function TalentMinder:InitializeSavedSettings()
+    if type(TalentMinderDB) ~= "table" then
+        TalentMinderDB = {}
     end
 
     self.buildSelection = {
-        source = GetValidValue(TalentDexDB.source, "source"),
-        content = GetValidValue(TalentDexDB.content, "content"),
-        variant = GetOptionalValue(TalentDexDB.variant, "variant"),
-        mode = GetOptionalValue(TalentDexDB.mode, "mode"),
+        source = GetValidValue(TalentMinderDB.source, "source"),
+        content = GetValidValue(TalentMinderDB.content, "content"),
+        variant = GetOptionalValue(TalentMinderDB.variant, "variant"),
+        mode = GetOptionalValue(TalentMinderDB.mode, "mode"),
     }
     self.settingsInitialized = true
     self:SaveBuildSelection()
 end
 
-function TalentDex:SaveBuildSelection()
+function TalentMinder:SaveBuildSelection()
     if not self.settingsInitialized then
         return
     end
 
-    TalentDexDB.source = GetValidValue(self.buildSelection.source, "source")
-    TalentDexDB.content = GetValidValue(self.buildSelection.content, "content")
-    TalentDexDB.variant = GetOptionalValue(self.buildSelection.variant, "variant")
-    TalentDexDB.mode = GetOptionalValue(self.buildSelection.mode, "mode")
+    TalentMinderDB.source = GetValidValue(self.buildSelection.source, "source")
+    TalentMinderDB.content = GetValidValue(self.buildSelection.content, "content")
+    TalentMinderDB.variant = GetOptionalValue(self.buildSelection.variant, "variant")
+    TalentMinderDB.mode = GetOptionalValue(self.buildSelection.mode, "mode")
 end

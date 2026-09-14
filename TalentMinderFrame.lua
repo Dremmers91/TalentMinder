@@ -1,4 +1,4 @@
-local _, TalentDex = ...
+local _, TalentMinder = ...
 
 local PANEL_WIDTH = 360
 local PANEL_INITIAL_HEIGHT = 400
@@ -16,13 +16,13 @@ local function ApplyBackdrop(frame)
     frame:SetBackdropBorderColor(0.75, 0.6, 0.15, 1)
 end
 
-function TalentDex:CreateTalentDexFrame(talentFrame)
+function TalentMinder:CreateTalentMinderFrame(talentFrame)
     if self.frame then
         return self.frame
     end
 
     -- UIParent keeps this companion panel independent from Blizzard's frame.
-    local frame = CreateFrame("Frame", "TalentDexFrame", UIParent, "BackdropTemplate")
+    local frame = CreateFrame("Frame", "TalentMinderFrame", UIParent, "BackdropTemplate")
     frame:SetSize(PANEL_WIDTH, PANEL_INITIAL_HEIGHT)
     frame:SetFrameStrata("DIALOG")
     frame:SetFrameLevel(talentFrame:GetFrameLevel() + 5)
@@ -31,7 +31,7 @@ function TalentDex:CreateTalentDexFrame(talentFrame)
 
     local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOP", frame, "TOP", 0, -18)
-    title:SetText("TalentDex")
+    title:SetText("TalentMinder")
     title:SetTextColor(1, 0.78, 0.18)
 
     local contextText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -47,7 +47,7 @@ function TalentDex:CreateTalentDexFrame(talentFrame)
     local closeButton = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
     closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4)
     closeButton:SetScript("OnClick", function()
-        TalentDex:HideFrame()
+        TalentMinder:HideFrame()
     end)
 
     self.frame = frame
@@ -57,7 +57,7 @@ function TalentDex:CreateTalentDexFrame(talentFrame)
     return frame
 end
 
-function TalentDex:UpdatePlayerContextText()
+function TalentMinder:UpdatePlayerContextText()
     if not self.frame or not self.frame.contextText then
         return
     end
@@ -75,7 +75,7 @@ function TalentDex:UpdatePlayerContextText()
     end
 end
 
-function TalentDex:AnchorFrame()
+function TalentMinder:AnchorFrame()
     if not self.frame or not self.talentFrame then
         return
     end
@@ -85,7 +85,7 @@ function TalentDex:AnchorFrame()
     self.frame:SetPoint("TOPLEFT", talentWindow, "TOPRIGHT", 12, 0)
 end
 
-function TalentDex:ShowFrame()
+function TalentMinder:ShowFrame()
     if not self.frame or not self.talentFrame or not self.talentFrame:IsVisible() then
         return
     end
@@ -93,14 +93,14 @@ function TalentDex:ShowFrame()
     self:UpdateToggleButton()
 end
 
-function TalentDex:HideFrame()
+function TalentMinder:HideFrame()
     if self.frame then
         self.frame:Hide()
     end
     self:UpdateToggleButton()
 end
 
-function TalentDex:ToggleFrame()
+function TalentMinder:ToggleFrame()
     if not self.frame then
         return
     end

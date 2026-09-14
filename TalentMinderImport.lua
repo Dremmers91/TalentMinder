@@ -1,11 +1,11 @@
-local _, TalentDex = ...
+local _, TalentMinder = ...
 
 local RAID_VARIANT_LABELS = {
     ["Single Target"] = "ST",
     Cleave = "Cleave",
 }
 
-function TalentDex:BuildLoadoutName(build)
+function TalentMinder:BuildLoadoutName(build)
     local parts = { "TD", build.source }
 
     if build.content == "Raid" then
@@ -26,21 +26,21 @@ local function ShowMessage(message)
     UIErrorsFrame:AddMessage(message, 1, 0.2, 0.2)
 end
 
-function TalentDex:ImportSelectedBuild()
+function TalentMinder:ImportSelectedBuild()
     local build = self:GetSelectedBuild()
     if not build or type(build.talentImportString) ~= "string" or build.talentImportString == "" then
-        ShowMessage("TalentDex: No import string is available for this build.")
+        ShowMessage("TalentMinder: No import string is available for this build.")
         return false
     end
 
     if InCombatLockdown() then
-        ShowMessage("TalentDex: Talent imports are unavailable during combat.")
+        ShowMessage("TalentMinder: Talent imports are unavailable during combat.")
         return false
     end
 
     local dialog = _G.ClassTalentLoadoutImportDialog
     if not dialog or not dialog.ShowDialog then
-        ShowMessage("TalentDex: Blizzard's import dialog is not available.")
+        ShowMessage("TalentMinder: Blizzard's import dialog is not available.")
         return false
     end
 
@@ -51,19 +51,19 @@ function TalentDex:ImportSelectedBuild()
     return true
 end
 
-function TalentDex:CopySelectedBuild()
+function TalentMinder:CopySelectedBuild()
     local build = self:GetSelectedBuild()
     if not build or type(build.talentImportString) ~= "string" or build.talentImportString == "" then
-        ShowMessage("TalentDex: No build code is available to copy.")
+        ShowMessage("TalentMinder: No build code is available to copy.")
         return false
     end
 
     if not CopyToClipboard then
-        ShowMessage("TalentDex: Clipboard support is unavailable.")
+        ShowMessage("TalentMinder: Clipboard support is unavailable.")
         return false
     end
 
     CopyToClipboard(build.talentImportString)
-    DEFAULT_CHAT_FRAME:AddMessage("|cffF8C44FTalentDex:|r Build code copied to the clipboard.")
+    DEFAULT_CHAT_FRAME:AddMessage("|cffF8C44FTalentMinder:|r Build code copied to the clipboard.")
     return true
 end

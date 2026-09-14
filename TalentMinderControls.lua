@@ -1,4 +1,4 @@
-local _, TalentDex = ...
+local _, TalentMinder = ...
 
 local PANEL_PADDING = 23
 local SELECTOR_WIDTH = 74
@@ -11,12 +11,12 @@ local NORMAL_BACKGROUND = { 0.05, 0.07, 0.10, 0.98 }
 local SELECTED_BACKGROUND = { 0.16, 0.12, 0.035, 1 }
 local SELECTED_BORDER = { 1, 0.72, 0.08, 1 }
 
-TalentDex.accentTitles = {}
-TalentDex.accentDividers = {}
-TalentDex.accentButtons = {}
+TalentMinder.accentTitles = {}
+TalentMinder.accentDividers = {}
+TalentMinder.accentButtons = {}
 
 local function GetAccentColor()
-    local classFile = TalentDex.playerContext and TalentDex.playerContext.class
+    local classFile = TalentMinder.playerContext and TalentMinder.playerContext.class
     local color = classFile and RAID_CLASS_COLORS[classFile]
     if color then
         return color.r, color.g, color.b
@@ -54,7 +54,7 @@ local function CreateTextButton(parent, text, width, height)
     button.label:SetPoint("CENTER")
     button.label:SetText(text)
     button.label:SetJustifyH("CENTER")
-    table.insert(TalentDex.accentButtons, button)
+    table.insert(TalentMinder.accentButtons, button)
 
     button:SetScript("OnEnter", function(self)
         if not self.selected then
@@ -77,7 +77,7 @@ local function CreateSectionTitle(parent, text, yOffset)
     title:SetText(text)
     local red, green, blue = GetAccentColor()
     title:SetTextColor(red, green, blue)
-    table.insert(TalentDex.accentTitles, title)
+    table.insert(TalentMinder.accentTitles, title)
     return title
 end
 
@@ -88,30 +88,30 @@ local function CreateDivider(parent, yOffset)
     divider:SetHeight(1)
     divider:SetPoint("TOPLEFT", parent, "TOPLEFT", 18, yOffset)
     divider:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -18, yOffset)
-    table.insert(TalentDex.accentDividers, divider)
+    table.insert(TalentMinder.accentDividers, divider)
     return divider
 end
 
 local function SelectOption(group, value)
-    TalentDex.selection[group] = value
-    TalentDex:SetBuildSelection(group, value)
+    TalentMinder.selection[group] = value
+    TalentMinder:SetBuildSelection(group, value)
 
-    for optionValue, button in pairs(TalentDex.optionButtons[group]) do
+    for optionValue, button in pairs(TalentMinder.optionButtons[group]) do
         button.selected = optionValue == value
         SetButtonAppearance(button, button.selected)
     end
 
     if group == "source" then
-        TalentDex:UpdateContentAvailability(value)
+        TalentMinder:UpdateContentAvailability(value)
     elseif group == "content" then
-        TalentDex:UpdateConditionalOptions(value)
+        TalentMinder:UpdateConditionalOptions(value)
     end
 
-    TalentDex:UpdateImportButtonState()
+    TalentMinder:UpdateImportButtonState()
 end
 
 local function CreateOptionRow(parent, group, options, yOffset)
-    TalentDex.optionButtons[group] = {}
+    TalentMinder.optionButtons[group] = {}
 
     for index, option in ipairs(options) do
         local button = CreateTextButton(parent, option, SELECTOR_WIDTH, SELECTOR_HEIGHT)
@@ -120,7 +120,7 @@ local function CreateOptionRow(parent, group, options, yOffset)
         button:SetScript("OnClick", function()
             SelectOption(group, option)
         end)
-        TalentDex.optionButtons[group][option] = button
+        TalentMinder.optionButtons[group][option] = button
     end
 end
 
@@ -162,7 +162,7 @@ local function LayoutActions(self, showConditional)
     self.frame:SetHeight(contentHeight)
 end
 
-function TalentDex:CreateControls(frame)
+function TalentMinder:CreateControls(frame)
     if frame.controlsCreated then
         return
     end
@@ -198,14 +198,14 @@ function TalentDex:CreateControls(frame)
     local importButton = CreateTextButton(frame, "Import Talents", ACTION_WIDTH, ACTION_HEIGHT)
     importButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 61, -338)
     importButton:SetScript("OnClick", function()
-        TalentDex:OnActionRequested("import-talents")
+        TalentMinder:OnActionRequested("import-talents")
     end)
     self.importButton = importButton
 
     local copyButton = CreateTextButton(frame, "Copy Build", ACTION_WIDTH, ACTION_HEIGHT)
     copyButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 187, -338)
     copyButton:SetScript("OnClick", function()
-        TalentDex:OnActionRequested("copy-build")
+        TalentMinder:OnActionRequested("copy-build")
     end)
     self.copyButton = copyButton
     self.actionButtons = { importButton, copyButton }
@@ -214,7 +214,7 @@ function TalentDex:CreateControls(frame)
     self:UpdateImportButtonState()
 end
 
-function TalentDex:UpdateImportButtonState()
+function TalentMinder:UpdateImportButtonState()
     if not self.importButton then
         return
     end
@@ -227,7 +227,7 @@ function TalentDex:UpdateImportButtonState()
     self.copyButton:SetAlpha(enabled and 1 or 0.45)
 end
 
-function TalentDex:UpdateContentAvailability(source)
+function TalentMinder:UpdateContentAvailability(source)
     if not self.optionButtons or not self.optionButtons.content then
         return
     end
@@ -254,7 +254,7 @@ function TalentDex:UpdateContentAvailability(source)
     self:UpdateConditionalOptions(self.selection.content)
 end
 
-function TalentDex:UpdateSourceAvailability()
+function TalentMinder:UpdateSourceAvailability()
     if not self.optionButtons or not self.optionButtons.source then
         return
     end
@@ -281,7 +281,7 @@ function TalentDex:UpdateSourceAvailability()
     SelectOption("source", self.selection.source)
 end
 
-function TalentDex:OnPlayerContextUpdated()
+function TalentMinder:OnPlayerContextUpdated()
     self:UpdateAccentColor()
     self:UpdatePlayerContextText()
     if self.frame and self.frame.controlsCreated then
@@ -290,7 +290,7 @@ function TalentDex:OnPlayerContextUpdated()
     self:UpdateImportButtonState()
 end
 
-function TalentDex:UpdateAccentColor()
+function TalentMinder:UpdateAccentColor()
     local red, green, blue = GetAccentColor()
     for _, title in ipairs(self.accentTitles) do
         title:SetTextColor(red, green, blue)
@@ -303,14 +303,14 @@ function TalentDex:UpdateAccentColor()
     end
 end
 
-function TalentDex:OnBuildDataUpdated()
+function TalentMinder:OnBuildDataUpdated()
     if self.frame and self.frame.controlsCreated then
         self:UpdateSourceAvailability()
     end
     self:UpdateImportButtonState()
 end
 
-function TalentDex:UpdateConditionalOptions(content)
+function TalentMinder:UpdateConditionalOptions(content)
     local definition = self:GetConditionalOptions()
     if not definition then
         self.conditionalSection:Hide()
@@ -346,7 +346,7 @@ function TalentDex:UpdateConditionalOptions(content)
 end
 
 -- Actions currently record intent only; their actual content is a later phase.
-function TalentDex:OnActionRequested(action)
+function TalentMinder:OnActionRequested(action)
     if action == "import-talents" then
         self:ImportSelectedBuild()
         return

@@ -1,39 +1,39 @@
-local addonName, TalentDex = ...
+local addonName, TalentMinder = ...
 
-TalentDex.name = addonName
-TalentDex.events = CreateFrame("Frame")
+TalentMinder.name = addonName
+TalentMinder.events = CreateFrame("Frame")
 
-TalentDex.events:RegisterEvent("PLAYER_LOGIN")
-TalentDex.events:RegisterEvent("ADDON_LOADED")
-TalentDex.events:RegisterEvent("PLAYER_REGEN_ENABLED")
-TalentDex.events:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-TalentDex.events:RegisterEvent("ACTIVE_PLAYER_SPECIALIZATION_CHANGED")
-TalentDex.events:SetScript("OnEvent", function(_, event, loadedAddon)
+TalentMinder.events:RegisterEvent("PLAYER_LOGIN")
+TalentMinder.events:RegisterEvent("ADDON_LOADED")
+TalentMinder.events:RegisterEvent("PLAYER_REGEN_ENABLED")
+TalentMinder.events:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+TalentMinder.events:RegisterEvent("ACTIVE_PLAYER_SPECIALIZATION_CHANGED")
+TalentMinder.events:SetScript("OnEvent", function(_, event, loadedAddon)
     if event == "PLAYER_LOGIN" then
-        TalentDex:InitializeSavedSettings()
-        TalentDex:RefreshPlayerContext()
-        TalentDex:TryAttachToTalentWindow()
+        TalentMinder:InitializeSavedSettings()
+        TalentMinder:RefreshPlayerContext()
+        TalentMinder:TryAttachToTalentWindow()
         return
     end
 
     if event == "PLAYER_SPECIALIZATION_CHANGED" then
         if loadedAddon == "player" then
-            TalentDex:RefreshPlayerContext()
+            TalentMinder:RefreshPlayerContext()
         end
         return
     end
 
     if event == "ACTIVE_PLAYER_SPECIALIZATION_CHANGED" then
-        TalentDex:RefreshPlayerContext()
+        TalentMinder:RefreshPlayerContext()
         return
     end
 
     if loadedAddon == "Blizzard_PlayerSpells" then
-        TalentDex:TryAttachToTalentWindow()
+        TalentMinder:TryAttachToTalentWindow()
         return
     end
 
-    if event == "PLAYER_REGEN_ENABLED" and TalentDex.pendingAttachment then
-        TalentDex:TryAttachToTalentWindow()
+    if event == "PLAYER_REGEN_ENABLED" and TalentMinder.pendingAttachment then
+        TalentMinder:TryAttachToTalentWindow()
     end
 end)
