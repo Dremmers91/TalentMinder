@@ -55,6 +55,7 @@ function TalentMinder:InitializeSavedSettings()
         mode = GetOptionalValue(TalentMinderDB.mode, "mode"),
     }
     self.settingsInitialized = true
+    TalentMinderDB.statPrioritySelections = TalentMinderDB.statPrioritySelections or {}
     self:SaveBuildSelection()
 end
 
@@ -67,4 +68,19 @@ function TalentMinder:SaveBuildSelection()
     TalentMinderDB.content = GetValidValue(self.buildSelection.content, "content")
     TalentMinderDB.variant = GetOptionalValue(self.buildSelection.variant, "variant")
     TalentMinderDB.mode = GetOptionalValue(self.buildSelection.mode, "mode")
+end
+
+function TalentMinder:GetSavedStatPrioritySelection(classFile, specID)
+    local selections = TalentMinderDB and TalentMinderDB.statPrioritySelections
+    local byClass = selections and selections[classFile]
+    return byClass and byClass[specID] or nil
+end
+
+function TalentMinder:SaveStatPrioritySelection(classFile, specID, priorityName)
+    if not self.settingsInitialized or not classFile or not specID or type(priorityName) ~= "string" then
+        return
+    end
+    TalentMinderDB.statPrioritySelections = TalentMinderDB.statPrioritySelections or {}
+    TalentMinderDB.statPrioritySelections[classFile] = TalentMinderDB.statPrioritySelections[classFile] or {}
+    TalentMinderDB.statPrioritySelections[classFile][specID] = priorityName
 end

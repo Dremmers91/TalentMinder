@@ -23,26 +23,24 @@ TalentMinder.buildSelection = {
     content = "M+",
 }
 TalentMinder.buildData = MOCK_BUILDS
+TalentMinder.statPriorityData = {}
 
 local EMPTY_BUILD = {
     talentImportString = "",
     rotationPlaceholder = "No TalentMinder build is available for this selection.",
 }
 
--- These are display labels.  CONTENT_KEYS lets the addon read data generated
--- with either the legacy names or the concise names shown in the panel.
+-- These are display labels. CONTENT_KEYS maps them to the canonical generated
+-- data categories without changing the panel's labels.
 local CONTENT_ORDER = { "Delves", "Raid", "M+", "PVP" }
 local CONTENT_KEYS = {
-    Delves = { "Delves", "Delve" },
+    Delves = { "Delves" },
     Raid = { "Raid" },
-    ["M+"] = { "M+", "Mythic+" },
-    PVP = { "PVP", "PvP" },
+    ["M+"] = { "Mythic+" },
+    PVP = { "PvP" },
 }
 local SOURCE_ORDER = { "Wowhead", "Icy Veins" }
 local PVP_SOURCES = { ["Icy Veins"] = true }
-local SOURCE_KEYS = {
-    ["Icy Veins"] = { "Icy Veins", "Icy-veins" },
-}
 
 local function GetSpecBuilds(buildData, context)
     if type(buildData) ~= "table" or not context.class or not context.spec then
@@ -59,12 +57,7 @@ local function GetSourceBuilds(buildData, context, source)
         return nil
     end
 
-    for _, sourceKey in ipairs(SOURCE_KEYS[source] or { source }) do
-        if specBuilds[sourceKey] then
-            return specBuilds[sourceKey]
-        end
-    end
-    return nil
+    return specBuilds[source]
 end
 
 local function FindContentBuild(buildData, context, selection)
@@ -172,6 +165,19 @@ function TalentMinder:SetBuildData(buildData)
     if self.OnBuildDataUpdated then
         self:OnBuildDataUpdated()
     end
+end
+
+function TalentMinder:SetStatPriorityData(statPriorityData)
+    self.statPriorityData = type(statPriorityData) == "table" and statPriorityData or {}
+    if self.OnStatPriorityDataUpdated then
+        self:OnStatPriorityDataUpdated()
+    end
+end
+
+function TalentMinder:GetCurrentStatPriorityData()
+    local context = self.playerContext or {}
+    local byClass = context.class and self.statPriorityData[context.class]
+    return byClass and byClass[context.spec] or nil
 end
 
 function TalentMinder:GetAvailableContent(source)

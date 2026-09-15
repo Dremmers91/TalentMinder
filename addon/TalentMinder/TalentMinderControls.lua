@@ -180,7 +180,16 @@ local function LayoutActions(self, showConditional)
         button:SetPoint("TOP", self.frame, "TOP", 0, buttonOffset)
     end
 
-    local contentHeight = math.abs(buttonOffset) + ACTION_HEIGHT + 30
+    self.statsDivider:ClearAllPoints()
+    self.statsDivider:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 18, buttonOffset - ACTION_HEIGHT - 16)
+    self.statsDivider:SetPoint("TOPRIGHT", self.frame, "TOPRIGHT", -18, buttonOffset - ACTION_HEIGHT - 16)
+
+    self.statPrioritySection:ClearAllPoints()
+    self.statPrioritySection:SetPoint("TOPLEFT", self.frame, "TOPLEFT", PANEL_PADDING, buttonOffset - ACTION_HEIGHT - 28)
+    self.statPrioritySection:SetPoint("TOPRIGHT", self.frame, "TOPRIGHT", -PANEL_PADDING, buttonOffset - ACTION_HEIGHT - 28)
+    local hasStats, statsHeight = self:UpdateStatPriorityControls()
+    self.statsDivider:SetShown(hasStats)
+    local contentHeight = math.abs(buttonOffset) + ACTION_HEIGHT + (hasStats and (statsHeight + 42) or 30)
     self.frame:SetHeight(contentHeight)
 end
 
@@ -225,6 +234,9 @@ function TalentMinder:CreateControls(frame)
     self.importButton = importButton
 
     self.actionButtons = { importButton }
+
+    self.statsDivider = CreateDivider(frame, -382)
+    self:CreateStatPriorityControls(frame)
 
     self:UpdateSourceAvailability()
     self:UpdateImportButtonState()
@@ -324,6 +336,14 @@ function TalentMinder:OnBuildDataUpdated()
         self:UpdateSourceAvailability()
     end
     self:UpdateImportButtonState()
+end
+
+function TalentMinder:OnStatPriorityDataUpdated()
+    self:RefreshStatPriorityLayout()
+end
+
+function TalentMinder:OnActiveHeroTalentUpdated()
+    self:RefreshStatPriorityLayout()
 end
 
 function TalentMinder:UpdateConditionalOptions(content)

@@ -8,6 +8,7 @@ TalentMinder.events:RegisterEvent("ADDON_LOADED")
 TalentMinder.events:RegisterEvent("PLAYER_REGEN_ENABLED")
 TalentMinder.events:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 TalentMinder.events:RegisterEvent("ACTIVE_PLAYER_SPECIALIZATION_CHANGED")
+TalentMinder.events:RegisterEvent("TRAIT_CONFIG_UPDATED")
 TalentMinder.events:SetScript("OnEvent", function(_, event, loadedAddon)
     if event == "PLAYER_LOGIN" then
         TalentMinder:InitializeSavedSettings()
@@ -25,6 +26,13 @@ TalentMinder.events:SetScript("OnEvent", function(_, event, loadedAddon)
 
     if event == "ACTIVE_PLAYER_SPECIALIZATION_CHANGED" then
         TalentMinder:RefreshPlayerContext()
+        return
+    end
+
+    if event == "TRAIT_CONFIG_UPDATED" then
+        if TalentMinder.OnActiveHeroTalentUpdated then
+            TalentMinder:OnActiveHeroTalentUpdated()
+        end
         return
     end
 

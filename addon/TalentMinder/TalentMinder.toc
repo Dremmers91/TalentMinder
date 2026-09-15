@@ -11,4 +11,5 @@ TalentMinderGeneratedData.lua
 TalentMinderImport.lua
 TalentWindow.lua
 TalentMinderFrame.lua
+TalentMinderStats.lua
 TalentMinderControls.lua

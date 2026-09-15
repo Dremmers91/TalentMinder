@@ -1,0 +1,9 @@
+node_modules/
+.npm-cache/
+tools/scanner/results/
+tools/scanner/scan-results/
+tools/scanner/.artifacts/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+dist/
