@@ -4,7 +4,7 @@ local _, TalentDex = ...
 TalentDex.generatedBuildData = {
     ["DEATHKNIGHT"] = {
         [250] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Blood Delves - Deathbringer" }, variants = {
                     ["Blood Delves - Deathbringer"] = { talentImportString = "CoPAAAAAAAAAAAAAAAAAAAAAAwMzyMzwMmZmhZZmZmmZxYmZmxAAAAAmxMzMzMDzYMAYMzMzAAAMmtBGwCYbYCMsAYGzAAwMDAMA" },
                 } },
@@ -31,7 +31,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [251] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "Frost Mythic+/Delves" }, variants = {
                     ["Frost Mythic+/Delves"] = { talentImportString = "CsPAAAAAAAAAAAAAAAAAAAAAAMDYmZMzMzYY2mZmZmZxMjMjxYYMGMzMzMzMzMDAAAAAAAAAjZbgBsAWGmAjFMzYmZgBghZGAgB" },
                 } },
@@ -62,7 +62,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [252] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "Unholy Mythic+/Delves" }, variants = {
                     ["Unholy Mythic+/Delves"] = { talentImportString = "CwPAAAAAAAAAAAAAAAAAAAAAAAYmhZMzMDz2MzMTzmZGjZAAAAAAAAgZGzYAwyMmZ2MzYMjBGYGbassAYbwGGwMAMmZGzgZGMjxA" },
                 } },
@@ -89,7 +89,7 @@ TalentDex.generatedBuildData = {
     },
     ["DEMONHUNTER"] = {
         [577] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Delves – Fel-Scarred" }, variants = {
                     ["Delves – Fel-Scarred"] = { talentImportString = "CEkAAAAAAAAAAAAAAAAAAAAAAYmZGzMjZMzMjxMhZGAAAAAAwsYmhZMzAzYZmZmxyMDmlB2mNzYY2YaMzMzM2AAAAAAAAYmBDAAAAD" },
                 } },
@@ -117,7 +117,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [581] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Raid"] = { variantOrder = { "Vengeance Single Target" }, variants = {
                     ["Vengeance Single Target"] = { talentImportString = "CUkAAAAAAAAAAAAAAAAAAAAAAAAMjZmZMzMjMzMYWMzMDMjZGzYGzMDzMzM2GzsNGAAAAAAAAwMzYDAAAADGzMzMbtNzMDAAAAAwA" },
                 } },
@@ -142,7 +142,7 @@ TalentDex.generatedBuildData = {
     },
     ["DRUID"] = {
         [102] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Balance Druid Delves - Keeper" }, variants = {
                     ["Balance Druid Delves - Keeper"] = { talentImportString = "CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWoMbNjxMD8AmlZmZmZDgZZmtZWmxMzGLzYMGzshBADw22YBTzMbDAAAA2MzMzMYzYGjBgZGAYA" },
                 } },
@@ -169,7 +169,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [103] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Delves - Druid of the Claw" }, variants = {
                     ["Delves - Druid of the Claw"] = { talentImportString = "CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjZYmxMzMzsZsNz2MmZegZGAAAA2CmNDPgZG1MmlxMzMLjZYAAAAAAMwAAAAoZWmlZmZAALwMzAswgBAAwMbYA" },
                 } },
@@ -196,7 +196,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [104] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Guardian Delves - Elunes Chosen" }, variants = {
                     ["Guardian Delves - Elunes Chosen"] = { talentImportString = "CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsMPwMjZWMLGmZZZgZzwoJyMzyMzMzsMmxAAAAAAMjlZALbzMYMLDgJAAAgNMzAsYGMgNLAMzAYA" },
                 } },
@@ -219,7 +219,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [105] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Wildstalker Delves" }, variants = {
                     ["Wildstalker Delves"] = { talentImportString = "CkGAAAAAAAAAAAAAAAAAAAAAAMMmxYGzMjZbmZYYhZx2MAAAAAAAAAAYbQzmhpZMzYMLmZmZWmhxAAAAAAAYMAAEAAwsMzWzyML2gZeAMjFQzAAMzAwA" },
                 } },
@@ -251,7 +251,7 @@ TalentDex.generatedBuildData = {
     },
     ["EVOKER"] = {
         [1467] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Scalecommander Raid/Delves -" }, variants = {
                     ["Scalecommander Raid/Delves -"] = { talentImportString = "CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjZgZYGzMgBjZamZmpZmx2MMzMzMzMzAmxMGzMLzMDMwYwGsMGN2GAzAwGGYmBDD" },
                 } },
@@ -284,7 +284,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [1468] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "Chronowarden Mythic+ - Chronowarden", "Flameshaper Mythic+ - Flameshaper" }, variants = {
                     ["Chronowarden Mythic+ - Chronowarden"] = { talentImportString = "CwbBAAAAAAAAAAAAAAAAAAAAAAAAAAAMzMz2yAzYmxsZGjx2wAAAzYGzghZyMzMAAAw2MzMNjZmZGjZAAYMjFWgBmhhGGWgxMDAD" },
                     ["Flameshaper Mythic+ - Flameshaper"] = { talentImportString = "CwbBAAAAAAAAAAAAAAAAAAAAAAAAAAAmZmZ2WmZGDjxsZGw2wAAAzYGzMjhZiZmBAAAMzMTGzMjxMzAAjZgFwCYGmAbM2MMAmZGD" },
@@ -312,7 +312,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [1473] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "High Key Mythic+ Build - Chronowarden", "Weekly Mythic+ Build - Scalecommander" }, variants = {
                     ["High Key Mythic+ Build - Chronowarden"] = { talentImportString = "CEcBAAAAAAAAAAAAAAAAAAAAAMMzMbzMzgZYmZZGzMjZ2AAAAAAAAYmhZGYM1YmZGAAAAMjZMmZWGzMwMMwYGLsADMDDNwCGzMzAAD" },
                     ["Weekly Mythic+ Build - Scalecommander"] = { talentImportString = "CEcBAAAAAAAAAAAAAAAAAAAAAMMzMbjZmxyMYmtZMzMmBAAAAAAAAmhHYGYM1YmZGAAAAMzMjxMz2YmBmZzYwCsMGGbDgZQshxMYmBDG" },
@@ -345,7 +345,7 @@ TalentDex.generatedBuildData = {
     },
     ["HUNTER"] = {
         [253] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Beast Mastery Delves - Pack Leader" }, variants = {
                     ["Beast Mastery Delves - Pack Leader"] = { talentImportString = "C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsAzwQDbAAYGzMzs8AzYmZmZMzgZGzMMzYmZGMGzYmhx0AAAAAAAAAzMGDYmNCWmZBsNAA" },
                 } },
@@ -379,7 +379,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [254] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Marksmanship Delves - Sentinel" }, variants = {
                     ["Marksmanship Delves - Sentinel"] = { talentImportString = "C4PAAAAAAAAAAAAAAAAAAAAAAwGMwMGzYZAjZwGAAAAAAAAYGzMzgxMzYmhx0wgZZbbmZmZmZmZWwsNMDAAwMjxAwM2wyMAbMz2MG" },
                 } },
@@ -414,7 +414,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [255] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Survival Delves - Sentinel" }, variants = {
                     ["Survival Delves - Sentinel"] = { talentImportString = "C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxYGLDgZGYbmZmZmxsNPAAAAAAgZMzMDGjZMzwYaAAAAAAGLLzMWwMzMzYMAMjNsMjxMzmBAAA" },
                 } },
@@ -450,7 +450,7 @@ TalentDex.generatedBuildData = {
     },
     ["MAGE"] = {
         [62] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Arcane Delves - Sunfury" }, variants = {
                     ["Arcane Delves - Sunfury"] = { talentImportString = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZGzsYzMDNzYGAAADAYmZaWWWmBAwGAAbwMzwmlZMzyMGzMzMDbMjZMDAwAAAMAzMwMDAGmZG" },
                 } },
@@ -477,7 +477,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [63] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "Fire Mythic+ - Sunfury" }, variants = {
                     ["Fire Mythic+ - Sunfury"] = { talentImportString = "C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsgZGZmZGAAAAAmZmmltlZAA2MzM2mZmZGbAAAAAYzMjZGAAMjxMzMjZmlBgZGMjxAmhxA" },
                 } },
@@ -506,7 +506,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [64] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["PvP"] = { variantOrder = { "3v3" }, variants = {
                     ["3v3"] = { talentImportString = "CAEAAAAAAAAAAAAAAAAAAAAAAMmtlZWmZmZDzMxMMzMzMzsYmZGzYGAAAYmZmllZm2AAgFAAAwGAbLjZmBsMPgxMjFAAAmZBYGGzAGMA" },
                 } },
@@ -536,7 +536,7 @@ TalentDex.generatedBuildData = {
     },
     ["MONK"] = {
         [268] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Brewmaster Delves/Open World - Master of Harmony" }, variants = {
                     ["Brewmaster Delves/Open World - Master of Harmony"] = { talentImportString = "CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZZzYGzwyM2MmZMAAAAAAALLgYmBmhBzgZmZGzsNMjZWGW2ssNbzYWAAglZZaZ2mZZAAAAMsBmZATjBMAgB" },
                 } },
@@ -563,7 +563,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [269] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "Windwalker Mythic+ - Conduit of the Celestials" }, variants = {
                     ["Windwalker Mythic+ - Conduit of the Celestials"] = { talentImportString = "C0QAAAAAAAAAAAAAAAAAAAAAAMzYMgxYZmZ2mBAAAAAAAAAAAYZYEmhhBMjhZmZGmNMDzyMBAswsxMmZmZAAsYmlZZMBAAmZGAzAMWGDYmZ2M" },
                 } },
@@ -590,7 +590,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [270] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Mistweaver Delves - Conduit of the Celestials" }, variants = {
                     ["Mistweaver Delves - Conduit of the Celestials"] = { talentImportString = "C4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAghxyMLjZx2MzMz2G2sNjZ2Mz22yMjFmZaGzYBDGglZmZGmNYwyMBAAAAAALWmZZWmZAAAYAYGwAsMZMDA" },
                 } },
@@ -622,7 +622,7 @@ TalentDex.generatedBuildData = {
     },
     ["PALADIN"] = {
         [65] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "Herald of the Sun Mythic+ - HeraldoftheSun", "Lightsmith Mythic+ - Lightsmith" }, variants = {
                     ["Herald of the Sun Mythic+ - HeraldoftheSun"] = { talentImportString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAgZBAmBAA2GzMzMjZmZBmZYZsZmFjmYWmxMzwY2yAwAwGYjlZmZWmtZmZrBAAAYBMD2AGGMDAgZGmxYYA" },
                     ["Lightsmith Mythic+ - Lightsmith"] = { talentImportString = "CEEAAAAAAAAAAAAAAAAAAAAAAAAAgZBAmBAA2GzMzMjZmZBmZYZsZmFjmYWmxMzwY2yAwAwGYjlZmBAAAmZ22WsNzwGYGsBMMYGAzMAMjxoB" },
@@ -652,7 +652,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [66] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "AoE / Mythic+ - Templar (High Keys)", "AoE / Mythic+ - Templar (Weekly Keys)" }, variants = {
                     ["AoE / Mythic+ - Templar (High Keys)"] = { talentImportString = "CIEAAAAAAAAAAAAAAAAAAAAAAsZsMLjZMzMzMLbjxsMmlZMAAAAAAAAQTzMMjZGGzWbAYgBMD2GAAYmptZmlZAA2ssgBAjZYMAALzAmZGwYB" },
                     ["AoE / Mythic+ - Templar (Weekly Keys)"] = { talentImportString = "CIEAAAAAAAAAAAAAAAAAAAAAAsZYWGzYmZmZW2GjZZWmlZMAAAAAAAAQTzMMjZGGzWbAYgBMD2GAAYmptZmlZAA2ssgBAjZYMAALzAmZGwYB" },
@@ -672,7 +672,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [70] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Retribution Delves - Templar" }, variants = {
                     ["Retribution Delves - Templar"] = { talentImportString = "CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAwoZbbmZWGjZmBAAAAAYmyYGMjtZmthZ2mxYMzwM2YDAAgZm2mZ2mBAsBYAAzwAzYGbYZGMmxMGMA" },
                 } },
@@ -702,7 +702,7 @@ TalentDex.generatedBuildData = {
     },
     ["PRIEST"] = {
         [256] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "Oracle Mythic+" }, variants = {
                     ["Oracle Mythic+"] = { talentImportString = "CAQAAAAAAAAAAAAAAAAAAAAAAADsMDWmZMmBmZbmtZmZmxMDAAAAAAAAAgZYZGMzMzwYmBbmmJGgZWwQYMLDwYwCAAMmZmxgZAmZGBzA" },
                 } },
@@ -725,7 +725,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [257] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "Holy Priest Delves & M+ - Oracle" }, variants = {
                     ["Holy Priest Delves & M+ - Oracle"] = { talentImportString = "CEQAAAAAAAAAAAAAAAAAAAAAAADAAAAAAgZmxsMMjZGDzwYZmZmBAAAwYmlZwMzM2MmZMgZKAmZBDhxsNAjBWMzMLAMjZGjBzAMzMgB" },
                 } },
@@ -752,7 +752,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [258] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Shadow Delves - Voidweaver" }, variants = {
                     ["Shadow Delves - Voidweaver"] = { talentImportString = "CIQAAAAAAAAAAAAAAAAAAAAAAMMDDAAAAAAAAAAAAmZxMmZbmxMzyMzYmx2MYmZmZDZGLb0AMzMDAEgZb2WAzGDAMwMzMzMbMDmZwMYA" },
                 } },
@@ -788,7 +788,7 @@ TalentDex.generatedBuildData = {
     },
     ["ROGUE"] = {
         [259] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "Assassination Mythic+/Delves - Fatebound" }, variants = {
                     ["Assassination Mythic+/Delves - Fatebound"] = { talentImportString = "CMQAAAAAAAAAAAAAAAAAAAAAAYmlZmFDAAAAAAzygtZAAAAAAttNzMzMzMGLzMzsNzyMz8AmxMjxwMjxAYgFYGjGzCgtBsZAwMzMMA" },
                 } },
@@ -819,7 +819,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [260] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["PvP"] = { variantOrder = { "Best Midnight PvP Talent Builds for Outlaw Rogue in Arena" }, variants = {
                     ["Best Midnight PvP Talent Builds for Outlaw Rogue in Arena"] = { talentImportString = "CQQAAAAAAAAAAAAAAAAAAAAAAAgZAGzwMbzMzYGjZbzMzMbTbzY2mBAAAAAMLLjZwMjZWMzMGAAAAzYGAGzihBGY2YhWYzMAzMYgB" },
                 } },
@@ -846,7 +846,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [261] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Mythic+"] = { variantOrder = { "Mythic+/AoE - Deathstalker", "Mythic+/AoE - Trickster" }, variants = {
                     ["Mythic+/AoE - Deathstalker"] = { talentImportString = "CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbLjxMDjZmZmZGGbzYGbbzMzMzMjBjZ2GAAAAGMmFzyADYBsMMBmFMDzMAzYA" },
                     ["Mythic+/AoE - Trickster"] = { talentImportString = "CUQA5HmDzx68KWyrW/8Y781L7Dgx2MAAAAAwsMGLTMbLjxMMjZmZmZGGbzYGbbzMzMzMjBjZ2GAAAAGMGwY2MMwAziWoFbYGwMDmxA" },
@@ -872,7 +872,7 @@ TalentDex.generatedBuildData = {
     },
     ["SHAMAN"] = {
         [262] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Elemental Delves - Farseer" }, variants = {
                     ["Elemental Delves - Farseer"] = { talentImportString = "CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMGjZZZZMmhBAAAAsYmNYADY2YCMLAwsNzMjZ2WmJMzYsYmZGzYxyMjZmxMzCAwAAzMGGGA" },
                 } },
@@ -903,7 +903,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [263] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Delves - Totemic" }, variants = {
                     ["Delves - Totemic"] = { talentImportString = "CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZmZmZmZmZmZGzAAAAAAAAAALwGMjFN2GAzA2AYWmxMGLLzAzMGLmZmZMWYGAADMGzMxMDAMGA" },
                 } },
@@ -937,7 +937,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [264] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Restoration Delves - Farseer" }, variants = {
                     ["Restoration Delves - Farseer"] = { talentImportString = "CgQAAAAAAAAAAAAAAAAAAAAAAAAAAgBAAAAzMzsssNzMzMzMzYmhxiZWgBMgZhJwYhBY2mZMa2WmZ2MzMLsYmZGDmlBAAAYGAMzgZwM" },
                 } },
@@ -965,7 +965,7 @@ TalentDex.generatedBuildData = {
     },
     ["WARLOCK"] = {
         [265] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Affliction Delves - Soul Harvester" }, variants = {
                     ["Affliction Delves - Soul Harvester"] = { talentImportString = "CkQAAAAAAAAAAAAAAAAAAAAAAwMjZGNLmxyMzYWGAAwMzsMLzMzyYAgxyyADYAzwWghtBAAgZAAAMzMmZY2GjZwMzMMMzMzAAmBG" },
                 } },
@@ -990,7 +990,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [266] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Demonology Delves - Soul Harvester" }, variants = {
                     ["Demonology Delves - Soul Harvester"] = { talentImportString = "CoQAAAAAAAAAAAAAAAAAAAAAAwMjZGNLmxiZGzyAAAAAAAMWWGYADYG2CM2MmZsMmxMzMAwMzMGDwMzYmxMbAAgxMzMzYw2MDwA" },
                 } },
@@ -1014,7 +1014,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [267] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Destruction Delves - Hellcaller" }, variants = {
                     ["Destruction Delves - Hellcaller"] = { talentImportString = "CsQAAAAAAAAAAAAAAAAAAAAAAwMjZGNLmxmZGzysZGzsYYZZmBAAzMjZmZxCMwsY0YGAzG2YAAgxMAAAzMYMzMmNAAAzMzMAAMDD" },
                 } },
@@ -1041,7 +1041,7 @@ TalentDex.generatedBuildData = {
     },
     ["WARRIOR"] = {
         [71] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Arms Dungeons & Delves - Slayer" }, variants = {
                     ["Arms Dungeons & Delves - Slayer"] = { talentImportString = "CcEAAAAAAAAAAAAAAAAAAAAAAgZmZmFzYmZGAAAghphxYmZzMzMzYmxMDAAAAgxyMDMhxy2ALgBMDTgZwGYmhhBzyMbDwMDAmhBA" },
                 } },
@@ -1071,7 +1071,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [72] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Fury Dungeons & Delves - Thane" }, variants = {
                     ["Fury Dungeons & Delves - Thane"] = { talentImportString = "CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgGDjZMz2yMzMjZmxMzMzMjZWmZmZmxsZmZGAAIMwGssY0YGQmFMjFAzgBAMzAwwiZAGD" },
                 } },
@@ -1095,7 +1095,7 @@ TalentDex.generatedBuildData = {
             },
         },
         [73] = {
-            ["Icy-veins"] = {
+            ["Icy Veins"] = {
                 ["Delves"] = { variantOrder = { "Delves - Mountain Thane" }, variants = {
                     ["Delves - Mountain Thane"] = { talentImportString = "CkEAAAAAAAAAAAAAAAAAAAAAAkBAAGzYmZmZmxsYmZZGjxMNmxwiZmZGzwMDAAAAWGAmxAMwGstY0YGAzCmZDmZmZYsAAzMAAMgxA" },
                 } },

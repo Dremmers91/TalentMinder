@@ -40,6 +40,9 @@ local CONTENT_KEYS = {
 }
 local SOURCE_ORDER = { "Wowhead", "Icy Veins" }
 local PVP_SOURCES = { ["Icy Veins"] = true }
+local SOURCE_KEYS = {
+    ["Icy Veins"] = { "Icy Veins", "Icy-veins" },
+}
 
 local function GetSpecBuilds(buildData, context)
     if type(buildData) ~= "table" or not context.class or not context.spec then
@@ -50,9 +53,22 @@ local function GetSpecBuilds(buildData, context)
     return classBuilds and classBuilds[context.spec] or nil
 end
 
-local function FindContentBuild(buildData, context, selection)
+local function GetSourceBuilds(buildData, context, source)
     local specBuilds = GetSpecBuilds(buildData, context)
-    local sourceBuilds = specBuilds and specBuilds[selection.source]
+    if not specBuilds then
+        return nil
+    end
+
+    for _, sourceKey in ipairs(SOURCE_KEYS[source] or { source }) do
+        if specBuilds[sourceKey] then
+            return specBuilds[sourceKey]
+        end
+    end
+    return nil
+end
+
+local function FindContentBuild(buildData, context, selection)
+    local sourceBuilds = GetSourceBuilds(buildData, context, selection.source)
     if not sourceBuilds then
         return EMPTY_BUILD
     end
@@ -83,18 +99,7 @@ local function GetOptionList(options, preferredOrder)
 end
 
 local function GetVariantOptions(contentBuild, source)
-    local options = GetOptionList(contentBuild.variants, contentBuild.variantOrder)
-    if source ~= "Wowhead" then
-        return options
-    end
-
-    local bestOptions = {}
-    for _, option in ipairs(options) do
-        if option:lower():find("best", 1, true) then
-            table.insert(bestOptions, option)
-        end
-    end
-    return bestOptions
+    return GetOptionList(contentBuild.variants, contentBuild.variantOrder)
 end
 
 local function ResolveBuild(contentBuild, selection)
@@ -127,8 +132,7 @@ local function HasImportString(build, source)
     for groupName, group in pairs({ variants = build.variants, modes = build.modes }) do
         if type(group) == "table" then
             for option, nestedBuild in pairs(group) do
-                if (groupName ~= "variants" or source ~= "Wowhead" or option:lower():find("best", 1, true))
-                    and HasImportString(nestedBuild, source) then
+                if HasImportString(nestedBuild, source) then
                     return true
                 end
             end
@@ -171,8 +175,7 @@ function TalentMinder:SetBuildData(buildData)
 end
 
 function TalentMinder:GetAvailableContent(source)
-    local specBuilds = GetSpecBuilds(self.buildData, self.playerContext)
-    local sourceBuilds = specBuilds and source and specBuilds[source]
+    local sourceBuilds = source and GetSourceBuilds(self.buildData, self.playerContext, source)
     local availableContent = {}
     if not sourceBuilds then
         return availableContent
