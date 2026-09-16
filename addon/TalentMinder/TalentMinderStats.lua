@@ -165,6 +165,7 @@ end
 function TalentMinder:CreateStatPriorityControls(parent)
     self.statPrioritySection = CreateFrame("Frame", nil, parent)
     self.statPrioritySection:SetWidth(314)
+    self.statPrioritySection:SetHeight(24)
     self.statPriorityHeader = CreateHeader(self.statPrioritySection)
     self.statPriorityHeader:SetPoint("TOPLEFT")
     self.statPriorityHeader:SetPoint("TOPRIGHT")
@@ -254,8 +255,10 @@ function TalentMinder:UpdateStatPriorityControls()
     for index = rows + 1, #self.statPriorityRows do
         self.statPriorityRows[index]:Hide()
     end
+    local sectionHeight = 24 + (showDropdown and 30 or 0) + rows * 24
+    self.statPrioritySection:SetHeight(sectionHeight)
     self.statPrioritySection:Show()
-    return true, 24 + (showDropdown and 30 or 0) + rows * 24
+    return true, sectionHeight
 end
 
 function TalentMinder:RefreshStatPriorityLayout()

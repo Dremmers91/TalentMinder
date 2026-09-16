@@ -65,4 +65,5 @@ test("stat priority panel keeps ranked stats available when its optional dropdow
   const statsUi = await readFile(new URL("../../../addon/TalentMinder/TalentMinderStats.lua", import.meta.url), "utf8");
   assert.match(statsUi, /local canShowDropdown = self\.statPriorityDropdown/);
   assert.match(statsUi, /and canShowDropdown/);
+  assert.match(statsUi, /self\.statPrioritySection:SetHeight\(sectionHeight\)/);
 });
