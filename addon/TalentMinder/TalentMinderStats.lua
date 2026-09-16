@@ -158,6 +158,7 @@ local function CreateHeader(parent)
     title:SetPoint("LEFT", 8, 0)
     title:SetText("Stat Priority")
     title:SetTextColor(unpack(theme.gold))
+    header.title = title
     return header
 end
 
@@ -204,7 +205,15 @@ function TalentMinder:UpdateStatPriorityControls()
         return false, 0
     end
 
-    local showDropdown = not resolved.isHeroPriority and #resolved.options > 1
+    -- The ranked list is useful even if a client does not expose the modern
+    -- Blizzard dropdown methods. Do not let that optional selector hide it.
+    local canShowDropdown = self.statPriorityDropdown
+        and self.statPriorityDropdown.SetDefaultText
+        and self.statPriorityDropdown.SetupMenu
+    local showDropdown = not resolved.isHeroPriority and #resolved.options > 1 and canShowDropdown
+    if self.statPriorityHeader and self.statPriorityHeader.title then
+        self.statPriorityHeader.title:SetText(showDropdown and "Stat Priority" or ("Stat Priority: " .. resolved.name))
+    end
     if showDropdown then
         if self.statPriorityDropdown.SetDefaultText then
             self.statPriorityDropdown:SetDefaultText(resolved.name)

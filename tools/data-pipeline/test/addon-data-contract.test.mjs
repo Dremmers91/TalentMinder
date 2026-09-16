@@ -60,3 +60,9 @@ test("stat priorities and dataset metadata are available after generated loading
   assert.equal(metadata.schemaVersion, 1);
   assert.match(metadata.contentHash, /^[a-f0-9]{64}$/);
 });
+
+test("stat priority panel keeps ranked stats available when its optional dropdown is unavailable", async () => {
+  const statsUi = await readFile(new URL("../../../addon/TalentMinder/TalentMinderStats.lua", import.meta.url), "utf8");
+  assert.match(statsUi, /local canShowDropdown = self\.statPriorityDropdown/);
+  assert.match(statsUi, /and canShowDropdown/);
+});
