@@ -2,7 +2,7 @@
 ## Title: TalentMinder
 ## Notes: A companion panel for the Retail Talents window.
 ## Author: TalentMinder
-## Version: 0.1.0
+## Version: 0.1.1
 ## SavedVariables: TalentMinderDB
 Core.lua
 TalentMinderSettings.lua
