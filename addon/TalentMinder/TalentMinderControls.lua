@@ -7,21 +7,16 @@ local SELECTOR_GAP = 6
 local ACTION_WIDTH = 112
 local ACTION_HEIGHT = 28
 
-local NORMAL_BACKGROUND = { 0.05, 0.07, 0.10, 0.98 }
-local SELECTED_BACKGROUND = { 0.16, 0.12, 0.035, 1 }
-local SELECTED_BORDER = { 1, 0.72, 0.08, 1 }
+local NORMAL_BACKGROUND = { 0.075, 0.045, 0.022, 0.98 }
+local SELECTED_BACKGROUND = { 0.20, 0.125, 0.025, 1 }
+local SELECTED_BORDER = { 1, 0.78, 0.18, 1 }
 
 TalentMinder.accentTitles = {}
 TalentMinder.accentDividers = {}
 TalentMinder.accentButtons = {}
 
 local function GetAccentColor()
-    local classFile = TalentMinder.playerContext and TalentMinder.playerContext.class
-    local color = classFile and RAID_CLASS_COLORS[classFile]
-    if color then
-        return color.r, color.g, color.b
-    end
-    return 0.35, 0.8, 1
+    return unpack(TalentMinder.theme.gold)
 end
 
 local function SetButtonAppearance(button, selected)
@@ -33,9 +28,13 @@ local function SetButtonAppearance(button, selected)
         button:SetBackdropBorderColor(unpack(border))
     else
         local red, green, blue = GetAccentColor()
-        button:SetBackdropBorderColor(red * 0.7, green * 0.7, blue * 0.7, 1)
+        button:SetBackdropBorderColor(TalentMinder.theme.border[1], TalentMinder.theme.border[2], TalentMinder.theme.border[3], 1)
     end
-    button.label:SetTextColor(selected and 1 or 0.9, selected and 0.8 or 0.9, selected and 0.25 or 0.9)
+    if selected then
+        button.label:SetTextColor(unpack(TalentMinder.theme.gold))
+    else
+        button.label:SetTextColor(unpack(TalentMinder.theme.text))
+    end
 end
 
 local function CreateTextButton(parent, text, width, height)
@@ -60,7 +59,7 @@ local function CreateTextButton(parent, text, width, height)
         if not self.selected then
             local red, green, blue = GetAccentColor()
             self:SetBackdropBorderColor(red, green, blue, 1)
-            self:SetBackdropColor(0.08, 0.11, 0.15, 1)
+            self:SetBackdropColor(0.13, 0.08, 0.035, 1)
         end
     end)
     button:SetScript("OnLeave", function(self)
@@ -72,19 +71,34 @@ local function CreateTextButton(parent, text, width, height)
 end
 
 local function CreateSectionTitle(parent, text, yOffset)
-    local title = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    title:SetPoint("TOPLEFT", parent, "TOPLEFT", PANEL_PADDING, yOffset)
+    local header = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    header:SetHeight(24)
+    header:SetPoint("TOPLEFT", parent, "TOPLEFT", 18, yOffset)
+    header:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -18, yOffset)
+    header:SetBackdrop({
+        bgFile = "Interface\\Buttons\\WHITE8x8",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true, tileSize = 8, edgeSize = 8,
+        insets = { left = 2, right = 2, top = 2, bottom = 2 },
+    })
+    header:SetBackdropColor(unpack(TalentMinder.theme.inset))
+    header:SetBackdropBorderColor(unpack(TalentMinder.theme.border))
+    local title = header:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    title:SetPoint("LEFT", 8, 0)
     title:SetText(text)
     local red, green, blue = GetAccentColor()
     title:SetTextColor(red, green, blue)
     table.insert(TalentMinder.accentTitles, title)
-    return title
+    function header:SetText(value)
+        title:SetText(value)
+    end
+    return header
 end
 
 local function CreateDivider(parent, yOffset)
     local divider = parent:CreateTexture(nil, "ARTWORK")
     local red, green, blue = GetAccentColor()
-    divider:SetColorTexture(red, green, blue, 0.4)
+    divider:SetColorTexture(red, green, blue, 0.28)
     divider:SetHeight(1)
     divider:SetPoint("TOPLEFT", parent, "TOPLEFT", 18, yOffset)
     divider:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -18, yOffset)
@@ -173,7 +187,8 @@ local function LayoutActions(self, showConditional)
 
     self.actionDivider:SetShown(showConditional)
     self.actionTitle:ClearAllPoints()
-    self.actionTitle:SetPoint("TOPLEFT", self.frame, "TOPLEFT", PANEL_PADDING, titleOffset)
+    self.actionTitle:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 18, titleOffset)
+    self.actionTitle:SetPoint("TOPRIGHT", self.frame, "TOPRIGHT", -18, titleOffset)
 
     for _, button in ipairs(self.actionButtons) do
         button:ClearAllPoints()

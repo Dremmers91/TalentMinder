@@ -57,7 +57,9 @@ for item in RETAIL_SPECIALIZATIONS:
     SPECS[item['classSlug']].append(item['specSlug'])
 CODE = re.compile(r'^[A-Za-z0-9+/]{60,}={0,2}$')
 TOKEN = re.compile(r'(?<![A-Za-z0-9+/])[A-Za-z0-9+/]{60,}={0,2}(?![A-Za-z0-9+/])')
-HERO = re.compile(r"Sunfury|Spellslinger|Keeper of the Grove|Elune.s Chosen|Rider of the Apocalypse|San.layn|Fel.Scarred|Void.Scarred", re.I)
+# Current Retail Hero Talent trees. A page may put this label in either the
+# heading or the build row, so extraction checks both locations below.
+HERO = re.compile(r"Aldrachi Reaver|Archon|Chronowarden|Colossus|Conduit of the Celestials|Dark Ranger|Deathbringer|Deathstalker|Diabolist|Elune.s Chosen|Farseer|Fatebound|Fel.Scarred|Flameshaper|Frostfire|Hellcaller|Herald of the Sun|Keeper of the Grove|Lightsmith|Master of Harmony|Mountain Thane|Oracle|Pack Leader|Rider of the Apocalypse|San.layn|Scalecommander|Sentinel|Shado.Pan|Slayer|Soul Harvester|Spellslinger|Stormbringer|Sunfury|Templar|Totemic|Trickster|Voidweaver|Wildstalker", re.I)
 
 
 def slug(value):
@@ -118,7 +120,7 @@ def parse_html(html, source, url):
         heading = link.find_previous(['h3', 'h2'])
         label = text(row.find(['td', 'th'])) if row else text(heading)
         label = label or 'Unlabelled talent build'
-        hero = HERO.search(text(heading))
+        hero = HERO.search(text(row) + ' ' + text(heading))
         recommended = bool(re.search(r'\bbest\b|recommend', label, re.I))
         results.append(record(source, url, label, code, href, recommended,
                               hero.group() if hero else None))

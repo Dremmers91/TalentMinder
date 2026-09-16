@@ -93,6 +93,12 @@ test("maps a scanner record into addon build data", () => {
   assert.equal(build.variant, "Sunfury Mythic+");
 });
 
+test("adds a hero talent label when a scanner build name does not identify its hero tree", () => {
+  const code = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzQzMGAAAGAwMz0sssMDAEbAAsBzMDbWmxMLzYMzMzMswMzMzMAADAAwAMzAMAYYmZA";
+  const build = scannerRowToBuild({ class: "Shaman", spec: "Elemental", source: "wowhead", mode: "mythic_plus", build_name: "Mythic+", hero_tree: "Farseer", extraction_status: "ok", import_code: code });
+  assert.equal(build.variant, "Farseer — Mythic+");
+});
+
 test("normalizes scanner sources and excludes malformed exports", () => {
   const code = "C4DAAAAAAAAAAAAAAAAAAAAAAMzwYZmZmFMzQzMGAAAGAwMz0sssMDAEbAAsBzMDbWmxMLzYMzMzMswMzMzMAADAAwAMzAMAYYmZA";
   assert.equal(normalizeSourceName("ICY_VEINS"), "Icy Veins");

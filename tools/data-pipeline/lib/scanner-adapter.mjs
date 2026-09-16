@@ -41,20 +41,27 @@ function rowModes(row) {
   return modes.filter((mode) => typeof mode === "string");
 }
 
+function variantLabel(row) {
+  const buildName = String(row.build_name || "Recommended build").trim() || "Recommended build";
+  const heroTree = String(row.hero_tree || "").trim();
+  if (!heroTree || buildName.toLocaleLowerCase().includes(heroTree.toLocaleLowerCase())) return buildName;
+  return `${heroTree} — ${buildName}`;
+}
+
 export function scannerRowToBuilds(row) {
   if (row?.extraction_status !== "ok") return [];
   const specialization = specializationFor(row);
   const source = normalizeSourceName(row.source);
   const talentImportString = normalizedExport(row.import_code);
   if (!specialization || !source || !talentImportString) return [];
-  const variant = String(row.build_name || "Recommended build").trim() || "Recommended build";
+  const variant = variantLabel(row);
   const modes = rowModes(row);
   return addonCategories(modes).map((content) => ({
     classFile: specialization.classFile, specId: specialization.specId,
     specName: `${specialization.spec} ${specialization.class}`, source, content, variant,
     talentImportString, hash: hashExport(talentImportString), sourceUrl: row.source_url,
     checkedAt: row.retrieved_at,
-    scannerMetadata: { buildName: variant, heroTree: row.hero_tree, recommended: row.recommended, best: row.best, modes },
+    scannerMetadata: { buildName: String(row.build_name || "Recommended build").trim() || "Recommended build", heroTree: row.hero_tree, recommended: row.recommended, best: row.best, modes },
   }));
 }
 

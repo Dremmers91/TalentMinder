@@ -1,12 +1,12 @@
 local _, TalentMinder = ...
 
 local SECONDARY_STATS = {
-    ["critical strike"] = "Critical Strike",
-    ["crit"] = "Critical Strike",
-    ["haste"] = "Haste",
-    ["mastery"] = "Mastery",
-    ["versatility"] = "Versatility",
-    ["vers"] = "Versatility",
+    { "criticalstrike", "Critical Strike" },
+    { "crit", "Critical Strike" },
+    { "haste", "Haste" },
+    { "mastery", "Mastery" },
+    { "versatility", "Versatility" },
+    { "vers", "Versatility" },
 }
 
 local RANK_COLORS = {
@@ -21,6 +21,28 @@ local function Normalize(value)
         return ""
     end
     return value:lower():gsub("[^%a%d]", "")
+end
+
+local function ExtractSecondaryStats(value)
+    local normalized = Normalize(value)
+    local matches = {}
+    local seen = {}
+    for order, entry in ipairs(SECONDARY_STATS) do
+        local needle, displayName = entry[1], entry[2]
+        local startAt = normalized:find(needle, 1, true)
+        if startAt and not seen[displayName] then
+            table.insert(matches, { name = displayName, startAt = startAt, order = order })
+            seen[displayName] = true
+        end
+    end
+    table.sort(matches, function(left, right)
+        return left.startAt == right.startAt and left.order < right.order or left.startAt < right.startAt
+    end)
+    local stats = {}
+    for _, match in ipairs(matches) do
+        table.insert(stats, match.name)
+    end
+    return stats
 end
 
 local function GetActiveHeroTalentName()
@@ -100,10 +122,11 @@ function TalentMinder:GetResolvedStatPriority()
     local ranks = {}
     local rankCount = 0
     for _, rawStat in ipairs(data.priorities[priorityName]) do
-        local stat = SECONDARY_STATS[Normalize(rawStat)]
-        if stat and not ranks[stat] then
-            rankCount = rankCount + 1
-            ranks[stat] = rankCount
+        for _, stat in ipairs(ExtractSecondaryStats(rawStat)) do
+            if not ranks[stat] then
+                rankCount = rankCount + 1
+                ranks[stat] = rankCount
+            end
         end
     end
     if rankCount == 0 then
@@ -128,12 +151,13 @@ local function CreateHeader(parent)
         tile = true, tileSize = 8, edgeSize = 10,
         insets = { left = 2, right = 2, top = 2, bottom = 2 },
     })
-    header:SetBackdropColor(0.04, 0.04, 0.04, 0.96)
-    header:SetBackdropBorderColor(0.42, 0.42, 0.42, 1)
+    local theme = TalentMinder.theme
+    header:SetBackdropColor(unpack(theme.inset))
+    header:SetBackdropBorderColor(unpack(theme.border))
     local title = header:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     title:SetPoint("LEFT", 8, 0)
     title:SetText("Stat Priority")
-    title:SetTextColor(1, 0.78, 0.18)
+    title:SetTextColor(unpack(theme.gold))
     return header
 end
 

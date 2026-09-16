@@ -112,6 +112,11 @@ class ScannerTests(unittest.TestCase):
         self.assertTrue(rows[0]['recommended'])
         self.assertEqual(rows[0]['mode'], 'mythic_plus')
 
+    def test_wowhead_row_reads_hero_label(self):
+        html = f'<main><h3>Talent Builds</h3><table><tr><td>Mythic+ - Farseer</td><td><a href="https://www.wowhead.com/talent-calc/blizzard/{CODE}">Build</a></td></tr></table></main>'
+        rows = parse_html(html, 'wowhead', 'https://www.wowhead.com/guide')
+        self.assertEqual(rows[0]['hero_tree'], 'Farseer')
+
     def test_wowhead_stat_priorities_keep_labeled_dual_lists(self):
         html = '''<main><h2>Best Stats for Protection Paladin</h2>
         <h3>Survivability Stat Priority</h3><ol><li>Strength</li><li>Haste</li><li>Mastery</li></ol>

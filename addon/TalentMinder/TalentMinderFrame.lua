@@ -5,15 +5,15 @@ local PANEL_INITIAL_HEIGHT = 400
 
 local function ApplyBackdrop(frame)
     frame:SetBackdrop({
-        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+        bgFile = "Interface\\Buttons\\WHITE8x8",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
         tile = true,
-        tileSize = 32,
+        tileSize = 8,
         edgeSize = 16,
         insets = { left = 5, right = 5, top = 5, bottom = 5 },
     })
-    frame:SetBackdropColor(0.025, 0.035, 0.055, 0.97)
-    frame:SetBackdropBorderColor(0.75, 0.6, 0.15, 1)
+    frame:SetBackdropColor(unpack(TalentMinder.theme.panel))
+    frame:SetBackdropBorderColor(unpack(TalentMinder.theme.border))
 end
 
 function TalentMinder:CreateTalentMinderFrame(talentFrame)
@@ -32,14 +32,14 @@ function TalentMinder:CreateTalentMinderFrame(talentFrame)
     local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     title:SetPoint("TOP", frame, "TOP", 0, -18)
     title:SetText("TalentMinder")
-    title:SetTextColor(1, 0.78, 0.18)
+    title:SetTextColor(unpack(self.theme.gold))
 
     local contextText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     contextText:SetPoint("TOP", title, "BOTTOM", 0, -5)
     frame.contextText = contextText
 
     local divider = frame:CreateTexture(nil, "ARTWORK")
-    divider:SetColorTexture(0.75, 0.6, 0.15, 0.55)
+    divider:SetColorTexture(self.theme.gold[1], self.theme.gold[2], self.theme.gold[3], 0.45)
     divider:SetHeight(1)
     divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 18, -64)
     divider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -18, -64)
