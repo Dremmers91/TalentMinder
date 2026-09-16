@@ -37,7 +37,19 @@ jobs:
       - run: python -m pip install -r tools/scanner/scanner-requirements.txt
       - run: python -m playwright install --with-deps chromium
       - name: Scan, validate, and atomically update generated data
-        run: npm run data:update
+        run: |
+          for attempt in 1 2 3; do
+            if npm run data:update; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "Data update failed after three attempts." >&2
+              exit 1
+            fi
+            delay=$((attempt * 120))
+            echo "Attempt $attempt failed; retrying in $delay seconds."
+            sleep "$delay"
+          done
       - id: changed
         name: Detect normalized data changes
         run: |

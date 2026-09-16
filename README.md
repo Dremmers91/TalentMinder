@@ -59,6 +59,9 @@ contain `TalentMinder.toc` directly; do not leave an extra nested ZIP folder.
 `.github/workflows/update-data.yml` runs every Tuesday at 17:00 UTC, after the
 North American reset, and can also be started manually. To change the schedule,
 edit its `on.schedule[0].cron` value; GitHub Actions cron expressions use UTC.
+Transient scan or validation failures are retried up to three times with an
+increasing delay; persistent failures stop without changing addon data or
+creating a release.
 
 Set `PYTHON` if your Python executable has a nonstandard name or location.
 
