@@ -107,6 +107,7 @@ local function CreateDivider(parent, yOffset)
 end
 
 local function SelectOption(group, value)
+    local previousValue = TalentMinder.selection[group]
     TalentMinder.selection[group] = value
     TalentMinder:SetBuildSelection(group, value)
 
@@ -120,11 +121,17 @@ local function SelectOption(group, value)
 
     local dropdown = TalentMinder.conditionalDropdown
     if dropdown and dropdown.selectionKey == group then
-        UIDropDownMenu_SetSelectedValue(dropdown, value)
-        UIDropDownMenu_SetText(dropdown, (dropdown.optionLabels and dropdown.optionLabels[value]) or value)
+        dropdown:SetDefaultText((dropdown.optionLabels and dropdown.optionLabels[value]) or value)
     end
 
     if group == "source" then
+        if previousValue ~= value then
+            TalentMinder.selection.content = nil
+            for _, button in pairs(TalentMinder.optionButtons.content or {}) do
+                button.selected = false
+                SetButtonAppearance(button, false)
+            end
+        end
         TalentMinder:UpdateContentAvailability(value)
     elseif group == "content" then
         TalentMinder:UpdateConditionalOptions(value)
@@ -180,28 +187,38 @@ local function LayoutOptionRow(parent, group, yOffset)
 end
 
 local function CreateConditionalDropdown(parent)
-    local dropdown = CreateFrame("Frame", nil, parent, "UIDropDownMenuTemplate")
-    dropdown:SetPoint("TOPLEFT", parent, "TOPLEFT", 9, -34)
-    UIDropDownMenu_SetWidth(dropdown, 286)
-    UIDropDownMenu_JustifyText(dropdown, "LEFT")
-
-    UIDropDownMenu_Initialize(dropdown, function(self, level)
-        for _, option in ipairs(self.options or {}) do
-            local info = UIDropDownMenu_CreateInfo()
-            info.text = (self.optionLabels and self.optionLabels[option]) or option
-            info.value = option
-            info.checked = TalentMinder.selection[self.selectionKey] == option
-            info.func = function()
-                SelectOption(self.selectionKey, option)
-            end
-            UIDropDownMenu_AddButton(info, level)
-        end
-    end)
+    local dropdown = CreateFrame("DropdownButton", nil, parent, "WowStyle1DropdownTemplate")
+    dropdown:SetHeight(24)
+    dropdown:SetPoint("TOPLEFT", TalentMinder.conditionalTitle, "BOTTOMLEFT", 0, -4)
+    dropdown:SetPoint("TOPRIGHT", TalentMinder.conditionalTitle, "BOTTOMRIGHT", 0, -4)
 
     return dropdown
 end
 
-local function LayoutActions(self, showConditional)
+local function LayoutActions(self, showConditional, showAction)
+    if not showAction then
+        self.actionDivider:Hide()
+        self.actionTitle:Hide()
+        for _, button in ipairs(self.actionButtons) do
+            button:Hide()
+        end
+
+        self.statsDivider:ClearAllPoints()
+        self.statsDivider:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 18, -304)
+        self.statsDivider:SetPoint("TOPRIGHT", self.frame, "TOPRIGHT", -18, -304)
+        self.statPrioritySection:ClearAllPoints()
+        self.statPrioritySection:SetPoint("TOPLEFT", self.frame, "TOPLEFT", PANEL_PADDING, -316)
+        self.statPrioritySection:SetPoint("TOPRIGHT", self.frame, "TOPRIGHT", -PANEL_PADDING, -316)
+        local hasStats, statsHeight = self:UpdateStatPriorityControls()
+        self.statsDivider:SetShown(hasStats)
+        self.frame:SetHeight(316 + (hasStats and (statsHeight + 18) or 30))
+        return
+    end
+
+    self.actionTitle:Show()
+    for _, button in ipairs(self.actionButtons) do
+        button:Show()
+    end
     local titleOffset = showConditional and -398 or -312
     local buttonOffset = showConditional and -424 or -338
 
@@ -239,7 +256,9 @@ function TalentMinder:CreateControls(frame)
 
     self.selection = {
         source = self.buildSelection.source,
-        content = self.buildSelection.content,
+        -- Content must be chosen in the current panel before build-specific
+        -- controls or actions are exposed.
+        content = nil,
         variant = self.buildSelection.variant,
         mode = self.buildSelection.mode,
     }
@@ -307,12 +326,13 @@ function TalentMinder:UpdateContentAvailability(source)
     LayoutOptionRow(self.frame, "content", -218)
 
     local selectedContentButton = self.optionButtons.content[self.selection.content]
+    if not self.selection.content then
+        self:UpdateConditionalOptions(nil)
+        return
+    end
     if not selectedContentButton or not selectedContentButton:IsShown() then
-        if #availableContent > 0 then
-            SelectOption("content", availableContent[1])
-        else
-            self:UpdateConditionalOptions(nil)
-        end
+        self.selection.content = nil
+        self:UpdateConditionalOptions(nil)
         return
     end
 
@@ -385,10 +405,16 @@ function TalentMinder:OnActiveHeroTalentUpdated()
 end
 
 function TalentMinder:UpdateConditionalOptions(content)
+    if not content then
+        self.conditionalSection:Hide()
+        LayoutActions(self, false, false)
+        return
+    end
+
     local definition = self:GetConditionalOptions()
     if not definition then
         self.conditionalSection:Hide()
-        LayoutActions(self, false)
+        LayoutActions(self, false, true)
         return
     end
 
@@ -400,11 +426,18 @@ function TalentMinder:UpdateConditionalOptions(content)
         self.selection[definition.key] = definition.default
     end
     self.conditionalTitle:SetText(definition.title)
-    UIDropDownMenu_SetSelectedValue(dropdown, self.selection[definition.key])
-    UIDropDownMenu_SetText(dropdown, definition.labels[self.selection[definition.key]] or self.selection[definition.key])
+    dropdown:SetDefaultText(definition.labels[self.selection[definition.key]] or self.selection[definition.key])
+    dropdown:SetupMenu(function(_, rootDescription)
+        for _, option in ipairs(definition.options) do
+            rootDescription:CreateRadio(definition.labels[option] or option,
+                function() return TalentMinder.selection[definition.key] == option end,
+                function() SelectOption(definition.key, option) end,
+                option)
+        end
+    end)
     self.conditionalSection:Show()
     SelectOption(definition.key, self.selection[definition.key])
-    LayoutActions(self, true)
+    LayoutActions(self, true, true)
 end
 
 -- Actions currently record intent only; their actual content is a later phase.
