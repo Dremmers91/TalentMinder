@@ -197,6 +197,7 @@ end
 
 local function LayoutActions(self, showConditional, showAction)
     if not showAction then
+        self.contentDivider:Hide()
         self.actionDivider:Hide()
         self.actionTitle:Hide()
         for _, button in ipairs(self.actionButtons) do
@@ -219,8 +220,9 @@ local function LayoutActions(self, showConditional, showAction)
     for _, button in ipairs(self.actionButtons) do
         button:Show()
     end
-    local titleOffset = showConditional and -398 or -312
-    local buttonOffset = showConditional and -424 or -338
+    self.contentDivider:SetShown(showConditional)
+    local titleOffset = showConditional and -398 or -272
+    local buttonOffset = showConditional and -424 or -298
 
     self.actionDivider:SetShown(showConditional)
     self.actionDivider:ClearAllPoints()
@@ -270,7 +272,7 @@ function TalentMinder:CreateControls(frame)
 
     CreateSectionTitle(frame, "CONTENT", -194)
     CreateOptionRow(frame, "content", { "Delves", "Raid", "M+", "PVP" }, -218)
-    CreateDivider(frame, -288)
+    self.contentDivider = CreateDivider(frame, -288)
 
     self.conditionalSection = CreateFrame("Frame", nil, frame)
     self.conditionalSection:SetSize(360, 86)
