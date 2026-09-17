@@ -110,9 +110,18 @@ local function SelectOption(group, value)
     TalentMinder.selection[group] = value
     TalentMinder:SetBuildSelection(group, value)
 
-    for optionValue, button in pairs(TalentMinder.optionButtons[group]) do
-        button.selected = optionValue == value
-        SetButtonAppearance(button, button.selected)
+    local buttons = TalentMinder.optionButtons[group]
+    if buttons then
+        for optionValue, button in pairs(buttons) do
+            button.selected = optionValue == value
+            SetButtonAppearance(button, button.selected)
+        end
+    end
+
+    local dropdown = TalentMinder.conditionalDropdown
+    if dropdown and dropdown.selectionKey == group then
+        UIDropDownMenu_SetSelectedValue(dropdown, value)
+        UIDropDownMenu_SetText(dropdown, (dropdown.optionLabels and dropdown.optionLabels[value]) or value)
     end
 
     if group == "source" then
@@ -122,6 +131,15 @@ local function SelectOption(group, value)
     end
 
     TalentMinder:UpdateImportButtonState()
+end
+
+local function ContainsOption(options, value)
+    for _, option in ipairs(options) do
+        if option == value then
+            return true
+        end
+    end
+    return false
 end
 
 local function CreateOptionRow(parent, group, options, yOffset)
@@ -161,31 +179,36 @@ local function LayoutOptionRow(parent, group, yOffset)
     end
 end
 
-local function CreateConditionalButtons(parent, definition)
-    local buttons = {}
-    local buttonGap = 6
-    local availableWidth = 314
-    local buttonWidth = math.floor((availableWidth - buttonGap * (#definition.options - 1)) / #definition.options)
-    local totalWidth = buttonWidth * #definition.options + buttonGap * (#definition.options - 1)
-    local xOffset = math.floor((360 - totalWidth) / 2)
+local function CreateConditionalDropdown(parent)
+    local dropdown = CreateFrame("Frame", nil, parent, "UIDropDownMenuTemplate")
+    dropdown:SetPoint("TOPLEFT", parent, "TOPLEFT", 9, -34)
+    UIDropDownMenu_SetWidth(dropdown, 286)
+    UIDropDownMenu_JustifyText(dropdown, "LEFT")
 
-    for index, option in ipairs(definition.options) do
-        local button = CreateTextButton(parent, option, buttonWidth, SELECTOR_HEIGHT)
-        button:SetPoint("TOPLEFT", parent, "TOPLEFT", xOffset + (index - 1) * (buttonWidth + buttonGap), -48)
-        button:SetScript("OnClick", function()
-            SelectOption(definition.key, option)
-        end)
-        buttons[option] = button
-    end
+    UIDropDownMenu_Initialize(dropdown, function(self, level)
+        for _, option in ipairs(self.options or {}) do
+            local info = UIDropDownMenu_CreateInfo()
+            info.text = (self.optionLabels and self.optionLabels[option]) or option
+            info.value = option
+            info.checked = TalentMinder.selection[self.selectionKey] == option
+            info.func = function()
+                SelectOption(self.selectionKey, option)
+            end
+            UIDropDownMenu_AddButton(info, level)
+        end
+    end)
 
-    return buttons
+    return dropdown
 end
 
 local function LayoutActions(self, showConditional)
-    local titleOffset = showConditional and -430 or -312
-    local buttonOffset = showConditional and -456 or -338
+    local titleOffset = showConditional and -398 or -312
+    local buttonOffset = showConditional and -424 or -338
 
     self.actionDivider:SetShown(showConditional)
+    self.actionDivider:ClearAllPoints()
+    self.actionDivider:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 18, titleOffset + 24)
+    self.actionDivider:SetPoint("TOPRIGHT", self.frame, "TOPRIGHT", -18, titleOffset + 24)
     self.actionTitle:ClearAllPoints()
     self.actionTitle:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 18, titleOffset)
     self.actionTitle:SetPoint("TOPRIGHT", self.frame, "TOPRIGHT", -18, titleOffset)
@@ -231,10 +254,10 @@ function TalentMinder:CreateControls(frame)
     CreateDivider(frame, -288)
 
     self.conditionalSection = CreateFrame("Frame", nil, frame)
-    self.conditionalSection:SetSize(360, 118)
+    self.conditionalSection:SetSize(360, 86)
     self.conditionalSection:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -288)
     self.conditionalTitle = CreateSectionTitle(self.conditionalSection, "", -24)
-    self.conditionalButtons = {}
+    self.conditionalDropdown = CreateConditionalDropdown(self.conditionalSection)
     self.conditionalSection:Hide()
 
     self.actionDivider = CreateDivider(frame, -406)
@@ -369,29 +392,17 @@ function TalentMinder:UpdateConditionalOptions(content)
         return
     end
 
-    for _, buttons in pairs(self.conditionalButtons) do
-        for _, button in pairs(buttons) do
-            button:Hide()
-        end
-    end
-
-    local cacheKey = definition.key .. "\031" .. table.concat(definition.options, "\031")
-    local buttons = self.conditionalButtons[cacheKey]
-    if not buttons then
-        buttons = CreateConditionalButtons(self.conditionalSection, definition)
-        self.conditionalButtons[cacheKey] = buttons
-    end
-
-    self.optionButtons[definition.key] = buttons
-    if not buttons[self.selection[definition.key]] then
+    local dropdown = self.conditionalDropdown
+    dropdown.selectionKey = definition.key
+    dropdown.options = definition.options
+    dropdown.optionLabels = definition.labels
+    if not ContainsOption(definition.options, self.selection[definition.key]) then
         self.selection[definition.key] = definition.default
     end
     self.conditionalTitle:SetText(definition.title)
+    UIDropDownMenu_SetSelectedValue(dropdown, self.selection[definition.key])
+    UIDropDownMenu_SetText(dropdown, definition.labels[self.selection[definition.key]] or self.selection[definition.key])
     self.conditionalSection:Show()
-
-    for _, button in pairs(buttons) do
-        button:Show()
-    end
     SelectOption(definition.key, self.selection[definition.key])
     LayoutActions(self, true)
 end

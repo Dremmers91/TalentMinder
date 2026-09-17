@@ -1,25 +1,12 @@
 local _, TalentMinder = ...
 
-local RAID_VARIANT_LABELS = {
-    ["Single Target"] = "ST",
-    Cleave = "Cleave",
-}
-
 function TalentMinder:BuildLoadoutName(build)
-    local parts = { "TD", build.source }
-
-    if build.content == "Raid" then
-        table.insert(parts, "Raid")
-        if build.variant then
-            table.insert(parts, RAID_VARIANT_LABELS[build.variant] or build.variant)
-        end
-    elseif build.content == "PVP" then
-        table.insert(parts, build.mode or "PVP")
-    else
-        table.insert(parts, build.content)
+    local parts = { "TM", build.content or "Build" }
+    local variant = build.variantName or build.variant or build.mode
+    if variant then
+        table.insert(parts, self:GetShortVariantName(variant))
     end
-
-    return string.sub(table.concat(parts, " - "), 1, 36)
+    return string.sub(table.concat(parts, "_"), 1, 36)
 end
 
 local function ShowMessage(message)

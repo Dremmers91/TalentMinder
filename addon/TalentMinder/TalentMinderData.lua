@@ -95,6 +95,44 @@ local function GetVariantOptions(contentBuild, source)
     return GetOptionList(contentBuild.variants, contentBuild.variantOrder)
 end
 
+function TalentMinder:GetShortVariantName(variant)
+    local value = type(variant) == "string" and variant or ""
+    local firstWord = value:match("^%s*([%a%d]+)")
+    return firstWord or "Build"
+end
+
+local function GetVariantSuffix(variant)
+    local suffix = type(variant) == "string" and variant:match(".*%s%-%s*(.+)$") or nil
+    if not suffix then
+        return nil
+    end
+    return suffix:match("^%s*([%a%d]+)")
+end
+
+function TalentMinder:GetCompactVariantLabels(options)
+    local labels = {}
+    local occurrences = {}
+    for _, option in ipairs(options) do
+        local shortName = self:GetShortVariantName(option)
+        occurrences[shortName] = (occurrences[shortName] or 0) + 1
+        labels[option] = shortName
+    end
+
+    local usedLabels = {}
+    for index, option in ipairs(options) do
+        local shortName = labels[option]
+        if occurrences[shortName] > 1 then
+            local suffix = GetVariantSuffix(option)
+            labels[option] = suffix and (shortName .. " — " .. suffix) or (shortName .. " " .. index)
+        end
+        usedLabels[labels[option]] = (usedLabels[labels[option]] or 0) + 1
+        if usedLabels[labels[option]] > 1 then
+            labels[option] = labels[option] .. " " .. usedLabels[labels[option]]
+        end
+    end
+    return labels
+end
+
 local function ResolveBuild(contentBuild, selection)
     if contentBuild.variants then
         local options = GetVariantOptions(contentBuild, selection.source)
@@ -106,11 +144,13 @@ local function ResolveBuild(contentBuild, selection)
                 break
             end
         end
-        return contentBuild.variants[selectedOption or options[1]] or EMPTY_BUILD, #options > 1 and selectionKey or nil
+        local resolvedOption = selectedOption or options[1]
+        return contentBuild.variants[resolvedOption] or EMPTY_BUILD, #options > 1 and selectionKey or nil, resolvedOption
     end
     if contentBuild.modes then
         local options = GetOptionList(contentBuild.modes, contentBuild.modeOrder)
-        return contentBuild.modes[selection.mode] or contentBuild.modes[options[1]] or EMPTY_BUILD, #options > 1 and "mode" or nil
+        local resolvedOption = contentBuild.modes[selection.mode] and selection.mode or options[1]
+        return contentBuild.modes[resolvedOption] or EMPTY_BUILD, #options > 1 and "mode" or nil, resolvedOption
     end
     return contentBuild, nil
 end
@@ -219,13 +259,14 @@ function TalentMinder:GetConditionalOptions()
                 key = isPvP and "mode" or "variant",
                 title = isPvP and "MODE" or "VARIANT",
                 options = options,
+                labels = self:GetCompactVariantLabels(options),
                 default = options[1],
             }
         end
     elseif contentBuild.modes then
         local options = GetOptionList(contentBuild.modes, contentBuild.modeOrder)
         if #options > 1 then
-            return { key = "mode", title = "MODE", options = options, default = options[1] }
+            return { key = "mode", title = "MODE", options = options, labels = self:GetCompactVariantLabels(options), default = options[1] }
         end
     end
     return nil
@@ -235,7 +276,7 @@ function TalentMinder:GetSelectedBuild()
     local context = self.playerContext
     local selection = self.buildSelection
     local contentBuild = FindContentBuild(self.buildData, context, selection)
-    local build, conditionalKey = ResolveBuild(contentBuild, selection)
+    local build, conditionalKey, resolvedVariant = ResolveBuild(contentBuild, selection)
     if not build then
         return nil
     end
@@ -246,6 +287,7 @@ function TalentMinder:GetSelectedBuild()
         content = selection.content,
         variant = conditionalKey == "variant" and selection.variant or nil,
         mode = conditionalKey == "mode" and selection.mode or nil,
+        variantName = resolvedVariant,
         talentImportString = build.talentImportString,
         rotationPlaceholder = build.rotationPlaceholder,
     }
