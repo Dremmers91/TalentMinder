@@ -43,6 +43,45 @@ To disable concurrency, add `--workers 1`. The default is `--workers 2`.
 python talent_scanner.py scanner-input.json --headed --output my-builds
 ```
 
+### Dedicated persistent browser profile
+
+For a self-hosted run on your own computer, the scanner can use an installed
+Chrome or Edge profile that persists site cookies and browser state between
+runs. Create a **dedicated** empty profile directory; do not point the scanner
+at the profile you use for everyday browsing. The profile must not be open in
+another browser process while the scan runs.
+
+```powershell
+python talent_scanner.py scanner-input.json `
+  --user-data-dir C:\TalentMinder\scanner-profile `
+  --browser-channel chrome `
+  --headed `
+  --workers 1 `
+  --output my-builds
+```
+
+Use `--browser-channel msedge` for Microsoft Edge. On the first run, the visible
+browser window lets you inspect the sites and complete ordinary consent or sign-in
+steps yourself. Later scans reuse only that dedicated profile. This does not
+bypass site access controls, CAPTCHAs, or network restrictions; it only avoids
+discarding legitimate session state after every run.
+
+### Icy Veins request cadence
+
+The default delay is three seconds between page loads. For a longer, more
+conservative Icy Veins scan, set a separate delay for that source while leaving
+Wowhead at the default cadence:
+
+```powershell
+python talent_scanner.py scanner-input.json --icy-veins-delay 60
+```
+
+At 60 seconds, a full Icy Veins pass can take more than an hour. This is intended
+to reduce request frequency, not to circumvent a `403 Forbidden` response or any
+other access control. If Icy Veins continues to return 403 responses after a
+cooldown, stop the scan and use an approved data source or seek permission from
+the site.
+
 Reports are checkpointed after each page:
 
 - `scan-results/talent-builds.json`: build records and available import strings.

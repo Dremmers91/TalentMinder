@@ -6,13 +6,26 @@ import argparse
 from unittest.mock import patch
 from pathlib import Path
 from talent_scanner import parse_html, parse_stat_priorities_html, seeds, stat_priority_url, discover, mode_for, live_retail_url, expansion_matches, DEFAULT_SOURCES, record, role_for
-from talent_scanner import unique, modes_for
+from talent_scanner import unique, modes_for, validate_runtime_options, delay_for_source
 from talent_scanner import scan
 
 CODE = 'CwP' + 'A' * 95
 
 
 class ScannerTests(unittest.TestCase):
+    def test_icy_veins_can_use_a_separate_request_delay(self):
+        args = argparse.Namespace(delay=3, icy_veins_delay=60)
+        self.assertEqual(delay_for_source(args, 'wowhead'), 3)
+        self.assertEqual(delay_for_source(args, 'icy-veins'), 60)
+        self.assertEqual(delay_for_source(argparse.Namespace(delay=3), 'icy-veins'), 3)
+
+    def test_persistent_profile_requires_visible_single_browser(self):
+        with self.assertRaisesRegex(ValueError, '--headed'):
+            validate_runtime_options(argparse.Namespace(user_data_dir='profile', headed=False, workers=1))
+        with self.assertRaisesRegex(ValueError, '--workers 1'):
+            validate_runtime_options(argparse.Namespace(user_data_dir='profile', headed=True, workers=2))
+        validate_runtime_options(argparse.Namespace(user_data_dir='profile', headed=True, workers=1))
+
     def test_concurrent_sites_and_report_merge(self):
         barrier = threading.Barrier(2)
         outputs = []
