@@ -313,6 +313,14 @@ def browser_exports(page, source, url):
         return _browser_exports(page, source, url)
 
 
+def delay_for_source(args, source):
+    """Use an optional slower cadence for Icy Veins without delaying Wowhead."""
+    icy_veins_delay = getattr(args, 'icy_veins_delay', None)
+    if source == 'icy-veins' and icy_veins_delay is not None:
+        return icy_veins_delay
+    return args.delay
+
+
 def _browser_exports(page, source, url):
     """Interact only with build tabs and named export controls, sequentially."""
     results = []
@@ -419,8 +427,23 @@ def scan_site(config, args):
     out.mkdir(parents=True, exist_ok=True)
     builds, statuses, priorities = [], [], []
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=not args.headed)
-        context = browser.new_context(permissions=['clipboard-read', 'clipboard-write'])
+        browser = None
+        profile_dir = getattr(args, 'user_data_dir', None)
+        launch_options = {'headless': not args.headed}
+        browser_channel = getattr(args, 'browser_channel', None)
+        if browser_channel:
+            launch_options['channel'] = browser_channel
+        if profile_dir:
+            # A persistent context keeps the dedicated browser profile's cookies
+            # and site state between runs. It owns its browser process directly.
+            context = pw.chromium.launch_persistent_context(
+                str(profile_dir),
+                permissions=['clipboard-read', 'clipboard-write'],
+                **launch_options,
+            )
+        else:
+            browser = pw.chromium.launch(**launch_options)
+            context = browser.new_context(permissions=['clipboard-read', 'clipboard-write'])
         page = context.new_page()
         page.set_default_timeout(5000)
         try:
@@ -440,7 +463,7 @@ def scan_site(config, args):
                         print(f'[{source}] {cls}/{spec}: {url}', flush=True)
                         try:
                             response = page.goto(url, wait_until='domcontentloaded', timeout=45000)
-                            page.wait_for_timeout(args.delay * 1000)
+                            page.wait_for_timeout(delay_for_source(args, source) * 1000)
                             status['source_url'] = page.url
                             if not live_retail_url(page.url):
                                 status.update(status='skipped', reason='Not current live retail')
@@ -495,7 +518,9 @@ def scan_site(config, args):
                 priorities.extend(stat_priorities)
                 statuses.extend(stat_statuses)
         finally:
-            browser.close()
+            context.close()
+            if browser:
+                browser.close()
             write_results(out, builds, statuses, priorities)
     return builds, statuses, priorities
 
@@ -560,13 +585,28 @@ def write_results(out, builds, statuses, priorities=None):
     (out / 'talent-builds.md').write_text('\n'.join(lines), encoding='utf-8')
 
 
+def validate_runtime_options(args):
+    """Reject persistent-profile combinations that would corrupt or lock it."""
+    if getattr(args, 'user_data_dir', None):
+        if not args.headed:
+            raise ValueError('--user-data-dir requires --headed so a user can establish and inspect site state.')
+        if args.workers != 1:
+            raise ValueError('--user-data-dir requires --workers 1 because browser profiles cannot be shared concurrently.')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('input', type=Path, help='JSON input file')
     parser.add_argument('--output', default='scan-results')
     parser.add_argument('--workers', type=int, default=2, help='Concurrent sites (default 2; use 1 for sequential)')
     parser.add_argument('--headed', action='store_true', help='Show an isolated Chromium window')
+    parser.add_argument('--user-data-dir', type=Path,
+                        help='Dedicated persistent browser-profile directory; requires --headed --workers 1')
+    parser.add_argument('--browser-channel',
+                        help='Installed Chromium channel for a persistent profile, e.g. chrome or msedge')
     parser.add_argument('--delay', type=float, default=3, help='Seconds between page loads (minimum 1)')
+    parser.add_argument('--icy-veins-delay', type=float,
+                        help='Optional seconds between Icy Veins page loads (minimum 1; defaults to --delay)')
     parser.add_argument('--max-pages', type=int, default=12, help='Maximum pages per site/spec')
     args = parser.parse_args()
     config = json.loads(args.input.read_text(encoding='utf-8-sig'))
@@ -579,8 +619,12 @@ def main():
         parser.error('Unknown source')
     if not set(config.get('content', ['pve','pvp'])) <= {'pve','pvp'}:
         parser.error('content must contain pve and/or pvp')
-    if args.delay < 1 or args.max_pages < 1 or args.workers < 1:
-        parser.error('delay, max-pages and workers must be at least 1')
+    if args.delay < 1 or args.max_pages < 1 or args.workers < 1 or (args.icy_veins_delay is not None and args.icy_veins_delay < 1):
+        parser.error('delay, icy-veins-delay, max-pages, and workers must be at least 1')
+    try:
+        validate_runtime_options(args)
+    except ValueError as exc:
+        parser.error(str(exc))
     scan(config, args)
     print(f'Reports written to {Path(args.output).resolve()}')
 
